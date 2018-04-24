@@ -1,0 +1,1 @@
+qarma --entry | xsel --clipboard

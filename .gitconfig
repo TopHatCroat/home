@@ -1,0 +1,8 @@
+[user]
+	email = martinovic.antonio@gmail.com
+	name = Antonio Martinović
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
