@@ -14,6 +14,8 @@ export ANDROID_HOME=$HOME/Android/Sdk
 export PYTHON_PATH=$PYTHON_PATH:$TENSORDIR/models/research:$TENSORDIR/models/research/slim
 export PYTHONPATH=$PYTHONPATH:$PYTHON_PATH
 
+export CDPATH=$CDPATH:$DEVDIR:$GOPATH/src
+
 # Path to your oh-my-zsh installation.
   export ZSH=/home/antonio/.oh-my-zsh
 
@@ -96,6 +98,7 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 
 alias zshconfig="subl3 ~/.zshrc"
+alias reload="source ~/.zshrc"
 alias ohmyzsh="subl3 ~/.oh-my-zsh"
 alias kc="kubectl"
 alias c="clipcopy"
@@ -120,3 +123,9 @@ zstyle :compinstall filename '/home/antonio/.zshrc'
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
+
+gocd () { cd `go list -f '{{.Dir}}' $1` }
+
+# excecute last command, usefull for commands that can't pipe inputs like: rm $(lo)
+# or you can just use rm $(!!) like a sane person
+lo () {echo $(bash -c "$(fc -ln -1)")}
