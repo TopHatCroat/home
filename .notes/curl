@@ -1,0 +1,5 @@
+# GREP
+
+-H add header to request eg: "Authorization: ..."
+
+-X request method, eg: GET

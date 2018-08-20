@@ -126,6 +126,19 @@ compinit
 
 gocd () { cd `go list -f '{{.Dir}}' $1` }
 
+snitch () { netstat -tulpn | grep $1}
+
 # excecute last command, usefull for commands that can't pipe inputs like: rm $(lo)
 # or you can just use rm $(!!) like a sane person
 lo () {echo $(bash -c "$(fc -ln -1)")}
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/home/antonio/Development/Hyperledger/indy-sdk/libindy/target/debug
+
+function mdless() {
+	pandoc -s -f markdown -t man $1 | groff -T utf8 -man | less
+}
+    
+umedit() { mkdir -p ~/.notes; vim ~/.notes/$1; }
+
+um() { mdless ~/.notes/"$1"; }
+
+umls() { ls ~/.notes }

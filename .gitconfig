@@ -6,3 +6,5 @@
 	br = branch
 	ci = commit
 	st = status
+[core]
+	autocrlf = input
