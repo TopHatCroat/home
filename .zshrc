@@ -128,6 +128,8 @@ gocd () { cd `go list -f '{{.Dir}}' $1` }
 
 snitch () { netstat -tulpn | grep $1}
 
+snatch() { kill -9 $(netstat -tulpn 2>/dev/null  | grep $1 | awk '{print $7}' | cut -d / -f 1) }
+
 # excecute last command, usefull for commands that can't pipe inputs like: rm $(lo)
 # or you can just use rm $(!!) like a sane person
 lo () {echo $(bash -c "$(fc -ln -1)")}
