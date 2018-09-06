@@ -70,19 +70,7 @@ plugins=(git gradle kubectl golang react-native)
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+export EDITOR='vim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -97,9 +85,9 @@ source $ZSH/oh-my-zsh.sh
 #
 # Example aliases
 
-alias zshconfig="subl3 ~/.zshrc"
+alias zshconfig="vim ~/.zshrc"
 alias reload="source ~/.zshrc"
-alias ohmyzsh="subl3 ~/.oh-my-zsh"
+alias ohmyzsh="vim ~/.oh-my-zsh"
 alias kc="kubectl"
 alias c="clipcopy"
 alias v="clippaste"
@@ -115,7 +103,7 @@ HISTSIZE=10000
 SAVEHIST=10000
 setopt appendhistory autocd extendedglob nomatch notify
 unsetopt beep
-bindkey -e
+bindkey -v
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
 zstyle :compinstall filename '/home/antonio/.zshrc'

@@ -8,3 +8,4 @@
 	st = status
 [core]
 	autocrlf = input
+	editor = vim
