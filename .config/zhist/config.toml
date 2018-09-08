@@ -1,0 +1,8 @@
+prompt = "sqlite3> "
+init_query = "SELECT DISTINCT(command) FROM history WHERE command LIKE '%%' AND status = 0 ORDER BY id DESC"
+init_cursor = "%"
+vim_mode_prompt = "VIM-MODE"
+ignore_words = [
+    "false",
+    "echo",
+]

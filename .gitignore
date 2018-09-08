@@ -1,0 +1,9 @@
+*
+.gitignore
+!.gitconfig
+!.zshrc
+!.config/zhist
+!.notes
+!Development/Sh/*
+!Development/bin/*
+

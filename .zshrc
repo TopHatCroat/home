@@ -17,7 +17,7 @@ export PYTHONPATH=$PYTHONPATH:$PYTHON_PATH
 export CDPATH=$CDPATH:$DEVDIR:$GOPATH/src
 
 # Path to your oh-my-zsh installation.
-  export ZSH=/home/antonio/.oh-my-zsh
+export ZSH=/home/antonio/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -72,6 +72,10 @@ source $ZSH/oh-my-zsh.sh
 
 export EDITOR='vim'
 
+# zhist
+source $DEVDIR/Sh/zhist.env
+(cd $DEVDIR/Sh/zsh-history && source ./init.zsh)
+
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
@@ -104,6 +108,8 @@ SAVEHIST=10000
 setopt appendhistory autocd extendedglob nomatch notify
 unsetopt beep
 bindkey -v
+# bindkey "^R" history-incremental-search-backward
+
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
 zstyle :compinstall filename '/home/antonio/.zshrc'
@@ -132,3 +138,5 @@ umedit() { mkdir -p ~/.notes; vim ~/.notes/$1; }
 um() { mdless ~/.notes/"$1"; }
 
 umls() { ls ~/.notes }
+
+ffile() { find . -type f | fzy }
