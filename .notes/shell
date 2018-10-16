@@ -1,0 +1,12 @@
+# SHELL COMMANDS SHORTCUTS
+
+
+!! - replaced with the last command
+
+!$ - replaced with the last argument of the last command
+
+!^ - replaced with the first argument of the last command
+
+!:# - replaced with the # argument of the last command (0 for the command itself), can be in range eg. *1-3* for first 3 arguments 
+
+

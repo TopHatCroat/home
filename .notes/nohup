@@ -1,0 +1,5 @@
+
+* nohup <app> & disown * does not show logs / app DOES NOT STOP on Ctrl + C
+
+
+

@@ -1,0 +1,19 @@
+### Scale a video
+
+## fixed width and height
+ffmpeg -i input.avi -vf scale="720:480" output.avi
+
+## -1 to rescale with width or height and  keep the aspect ratio
+ffmpeg -i input.avi -vf scale="720:-1" output.avi
+
+## or scale using the input variables for width and height 
+ffmpeg -i input.avi -vf scale="iw/1:ih/2" output.avi
+
+### Unshake a video
+ffmpeg -i input.mp4 -vf vidstabdetect -f null -
+*or*
+ffmpeg -i input.mp4 -vf vidstabdetect=shakiness=10:accuracy=15 -f null -
+
+ffmpeg -i input.mp4 -vf vidstabtransform=smoothing=30:input="transforms.trf" output.mp4
+
+
