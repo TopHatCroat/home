@@ -16,6 +16,8 @@ export PYTHONPATH=$PYTHONPATH:$PYTHON_PATH
 
 export CDPATH=$CDPATH:$DEVDIR:$GOPATH/src
 
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/home/antonio/Development/Hyperledger/indy-sdk/libindy/target/debug
+
 # Path to your oh-my-zsh installation.
 export ZSH=/home/antonio/.oh-my-zsh
 
@@ -108,7 +110,6 @@ SAVEHIST=10000
 setopt appendhistory autocd extendedglob nomatch notify
 unsetopt beep
 bindkey -v
-# bindkey "^R" history-incremental-search-backward
 
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
@@ -118,8 +119,6 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
-gocd () { cd `go list -f '{{.Dir}}' $1` }
-
 snitch () { netstat -tulpn | grep $1}
 
 snatch() { kill -9 $(netstat -tulpn 2>/dev/null  | grep $1 | awk '{print $7}' | cut -d / -f 1) }
@@ -127,7 +126,6 @@ snatch() { kill -9 $(netstat -tulpn 2>/dev/null  | grep $1 | awk '{print $7}' | 
 # excecute last command, usefull for commands that can't pipe inputs like: rm $(lo)
 # or you can just use rm $(!!) like a sane person
 lo () {echo $(bash -c "$(fc -ln -1)")}
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/home/antonio/Development/Hyperledger/indy-sdk/libindy/target/debug
 
 function mdless() {
 	pandoc -s -f markdown -t man $1 | groff -T utf8 -man | less
@@ -140,3 +138,7 @@ um() { mdless ~/.notes/"$1"; }
 umls() { ls ~/.notes }
 
 ffile() { find . -type f | fzy }
+
+publish_blog () {
+	ssh root@159.65.194.81 'bash /root/publish_script.sh'
+}
