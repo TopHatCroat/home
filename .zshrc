@@ -64,6 +64,7 @@ export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE="true"
 # Example aliases
 
 alias zshconfig="vim ~/.zshrc"
+alias vimconfig="vim ~/.vimrc"
 alias reload="source ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias kc="kubectl"
