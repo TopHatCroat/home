@@ -1,0 +1,3 @@
+# Skip first N-1 lines and print
+tail -n +N
+

@@ -1,0 +1,5 @@
+### Comment a line 
+sed -i '/<pattern>/s/^/#/g' file
+
+### Uncomment a line 
+sed -i '/<pattern>/s/^#//g' file

@@ -1,0 +1,8 @@
+### Write to file
+cat > filename.txt <<EOF
+
+here goes text
+
+EOF
+
+
