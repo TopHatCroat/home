@@ -7,14 +7,9 @@ export PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 
 export DEVDIR=$HOME/Development
 export GOPATH=$DEVDIR/Go
-export TENSORDIR=$DEVDIR/TensorFlow
 export ANDROID_HOME=$HOME/Android/Sdk
 
 export PATH="$PATH:$GOPATH/src/github.com/hyperledger/fabric-samples"
-
-# Seen both in the wild
-export PYTHON_PATH=$PYTHON_PATH:$TENSORDIR/models/research:$TENSORDIR/models/research/slim
-export PYTHONPATH=$PYTHONPATH:$PYTHON_PATH
 
 export CDPATH=$CDPATH:$DEVDIR:$GOPATH/src
 
@@ -22,6 +17,10 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/home/antonio/Development
 
 # Path to your oh-my-zsh installation.
 export ZSH=/home/antonio/.oh-my-zsh
+
+# Vim setup
+mkdir -p ~/.vim/undo
+mkdir -p ~/.vim/pack/tpope/start
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -119,3 +118,4 @@ publish_blog () {
 gen_passwd () {
 	python -c 'from passlib.hash import sha512_crypt; print(sha512_crypt.using(rounds=5000).hash("'"$1"'"))'
 }
+

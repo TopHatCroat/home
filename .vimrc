@@ -2,7 +2,8 @@
 set history=500
 
 " Add line numbers
-set number
+" set number
+set number relativenumber
 
 " Enable filetype plugins
 filetype plugin on
@@ -21,14 +22,11 @@ nmap <leader>w :w!<cr>
 " (useful for handling the permission-denied error)
 command W w !sudo tee % > /dev/null
 
-" Set 7 lines to the cursor - when moving vertically using j/k
-set so=5
-
 " Turn on the Wild menu
 set wildmenu
 
 " Ignore compiled files
-set wildignore=*.o,*~,*.pyc,*/.git/*
+set wildignore=*/tmp/*,*.so,*.swp,*.zip,*.o,*~,*.pyc,*/.git/*
 
 "Always show current position
 set ruler
@@ -231,4 +229,22 @@ function! VisualSelection(direction, extra_filter) range
     let @/ = l:pattern
     let @" = l:saved_reg
 endfunction
+
+colorscheme elflord
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Turn persistent undo on
+"    means that you can undo even when you close a buffer/VIM
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+try
+    set undodir=~/.vim/undo/
+    set undofile
+catch
+endtry
+
+" CtrlP fuzzy search
+set runtimepath^=~/.vim/bundle/ctrlp.vim
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_working_path_mode = 'ra'
 
