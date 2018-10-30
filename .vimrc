@@ -87,8 +87,10 @@ vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
 vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 
 
-map <leader>l :bnext<cr>
-map <leader>h :bprevious<cr>
+map <leader>k :bnext<cr>
+map <leader>j :bprevious<cr>
+map <leader>h :tabp<cr>
+map <leader>l :tabn<cr>
 
 " Useful mappings for managing tabs
 map <leader>tn :tabnew<cr>
@@ -242,9 +244,32 @@ try
 catch
 endtry
 
+
+" Specify a directory for plugins
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
+
+Plug 'https://github.com/kien/ctrlp.vim.git'
+
+" Multiple Plug commands can be written in a single line using | separators
+Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+
+call plug#end()
+
 " CtrlP fuzzy search
-set runtimepath^=~/.vim/bundle/ctrlp.vim
+"set runtimepath^=~/.vim/bundle/ctrlp.vim
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_working_path_mode = 'ra'
+
+" go specific
+
+" there are 2 types of lists, quickfix and location list, this forces quickfix
+" always
+let g:go_list_type = "quickfix"
+" jump between stuff in quickfix list
+map <C-n> :cnext<CR>
+map <C-m> :cprevious<CR>
 

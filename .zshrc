@@ -27,9 +27,6 @@ mkdir -p ~/.vim/pack/tpope/start
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="example"
 
-# Uncomment the following line to enable command auto-correction.
-ENABLE_CORRECTION="true"
-
 # Uncomment the following line to display red dots whilst waiting for completion.
 COMPLETION_WAITING_DOTS="true"
 
@@ -79,8 +76,8 @@ alias rnmenu="adb shell input keyevent 82"
 HISTFILE=~/.histfile
 HISTSIZE=10000
 SAVEHIST=10000
-setopt appendhistory autocd extendedglob nomatch notify
-unsetopt beep
+setopt appendhistory extendedglob nomatch notify
+unsetopt beep AUTO_CD
 bindkey -v
 
 # End of lines configured by zsh-newuser-install
