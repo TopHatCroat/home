@@ -15,9 +15,6 @@ set autoread
 " With a map leader it's possible to do extra key combinations
 let mapleader = ","
 
-" Fast saving
-nmap <leader>w :w!<cr>
-
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
 command W w !sudo tee % > /dev/null
@@ -128,7 +125,6 @@ set laststatus=2
 " Format the status line
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
 
-
 " Remap VIM 0 to first non-blank character
 map 0 ^
 
@@ -168,7 +164,6 @@ map <leader>sp [s
 map <leader>sa zg
 map <leader>s? z=
 
-
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
@@ -180,7 +175,6 @@ map <leader>x :e ~/buffer.md<cr>
 
 " Toggle paste mode on and off
 map <leader>pp :setlocal paste!<cr>
-
 
 " Returns true if paste mode is enabled
 function! HasPaste()
@@ -254,7 +248,17 @@ Plug 'https://github.com/kien/ctrlp.vim.git'
 " Multiple Plug commands can be written in a single line using | separators
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
+Plug 'AndrewRadev/splitjoin.vim'
+
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+
+Plug 'tpope/vim-fugitive'
+
+Plug 'vim-airline/vim-airline'
+
+Plug 'scrooloose/nerdtree'
+
+Plug 'Xuyuanp/nerdtree-git-plugin'
 
 call plug#end()
 
@@ -264,6 +268,11 @@ let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_working_path_mode = 'ra'
 
+" ultisnips
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
 " go specific
 
 " there are 2 types of lists, quickfix and location list, this forces quickfix
@@ -272,4 +281,27 @@ let g:go_list_type = "quickfix"
 " jump between stuff in quickfix list
 map <C-n> :cnext<CR>
 map <C-m> :cprevious<CR>
+autocmd FileType go nmap <leader>f <Plug>(go-imports)
+autocmd FileType go nmap <leader>d <Plug>(go-doc)
+autocmd FileType go nmap <Leader>i <Plug>(go-info)
+ 
+" let g:go_auto_type_info = 1
 
+" run :GoBuild or :GoTestCompile based on the go file
+function! s:build_go_files()
+  let l:file = expand('%')
+  if l:file =~# '^\f\+_test\.go$'
+    call go#test#Test(0, 1)
+  elseif l:file =~# '^\f\+\.go$'
+    call go#cmd#Build(0)
+  endif
+endfunction
+
+autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
+
+let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
+let g:go_metalinter_autosave = 1
+
+" NerdTree
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif

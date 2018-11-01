@@ -70,7 +70,10 @@ alias cdv="cd $(clippaste)"
 alias pwdc="pwd | c"
 alias rn="react-native"
 alias rnmenu="adb shell input keyevent 82"
-
+# typos
+alias {gut,got,gti}="git"
+alias dc="cd"
+alias sl="ls"
 
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
