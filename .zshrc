@@ -16,7 +16,7 @@ export CDPATH=$CDPATH:$DEVDIR:$GOPATH/src
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/home/antonio/Development/Hyperledger/indy-sdk/libindy/target/debug
 
 # Path to your oh-my-zsh installation.
-export ZSH=/home/antonio/.oh-my-zsh
+export ZSH=$HOME/.oh-my-zsh
 
 # Vim setup
 mkdir -p ~/.vim/undo
@@ -85,7 +85,7 @@ bindkey -v
 
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
-zstyle :compinstall filename '/home/antonio/.zshrc'
+zstyle :compinstall filename '~/.zshrc'
 
 autoload -Uz compinit
 compinit

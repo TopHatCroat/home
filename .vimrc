@@ -19,6 +19,9 @@ let mapleader = ","
 " (useful for handling the permission-denied error)
 command W w !sudo tee % > /dev/null
 
+" Word completition
+set wildmode=longest,list,full
+
 " Turn on the Wild menu
 set wildmenu
 
@@ -83,7 +86,6 @@ set wrap "Wrap lines
 vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
 vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 
-
 map <leader>k :bnext<cr>
 map <leader>j :bprevious<cr>
 map <leader>h :tabp<cr>
@@ -93,8 +95,8 @@ map <leader>l :tabn<cr>
 map <leader>tn :tabnew<cr>
 map <leader>to :tabonly<cr>
 map <leader>tc :tabclose<cr>
-map <leader>tm :tabmove
-map <leader>t<leader> :tabnext
+map <leader>tm :tabmove<cr>
+map <leader>t<leader> :tabnext<cr>
 
 " Let 'tl' toggle between this and the last accessed tab
 let g:lasttab = 1
@@ -260,6 +262,13 @@ Plug 'scrooloose/nerdtree'
 
 Plug 'Xuyuanp/nerdtree-git-plugin'
 
+Plug 'mbbill/undotree'
+
+" Currently broken, see https://github.com/python-mode/python-mode/issues/951
+" Plug 'python-mode/python-mode', { 'branch': 'develop' }
+
+Plug 'maralla/completor.vim'
+
 call plug#end()
 
 " CtrlP fuzzy search
@@ -274,7 +283,7 @@ let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 " go specific
-
+let g:completor_gocode_binary = '$GOPATH/bin/gocode'
 " there are 2 types of lists, quickfix and location list, this forces quickfix
 " always
 let g:go_list_type = "quickfix"
@@ -305,3 +314,9 @@ let g:go_metalinter_autosave = 1
 " NerdTree
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+nmap <leader>e :NERDTree<cr>
+
+" Python completioion
+let g:completor_python_binary = '/usr/bin/python'
+
+autocmd FileType python nnoremap <Leader>f :0,$!yapf<CR>

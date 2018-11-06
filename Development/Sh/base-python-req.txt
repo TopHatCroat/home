@@ -1,0 +1,4 @@
+# For python completiotion with completor.vim
+jedi
+# Python formatter
+yapf
