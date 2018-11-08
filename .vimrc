@@ -20,7 +20,7 @@ let mapleader = ","
 command W w !sudo tee % > /dev/null
 
 " Word completition
-set wildmode=longest,list,full
+" set wildmode=longest,list,full
 
 " Turn on the Wild menu
 set wildmenu
@@ -267,7 +267,9 @@ Plug 'mbbill/undotree'
 " Currently broken, see https://github.com/python-mode/python-mode/issues/951
 " Plug 'python-mode/python-mode', { 'branch': 'develop' }
 
-Plug 'maralla/completor.vim'
+" Plug 'maralla/completor.vim'
+
+Plug 'junegunn/goyo.vim'
 
 call plug#end()
 
@@ -320,3 +322,6 @@ nmap <leader>e :NERDTree<cr>
 let g:completor_python_binary = '/usr/bin/python'
 
 autocmd FileType python nnoremap <Leader>f :0,$!yapf<CR>
+
+" Disable completition for markdown
+let g:completor_completor = ['tagbar', 'qf', 'netrw', 'unite', 'vimwiki', 'markdown']

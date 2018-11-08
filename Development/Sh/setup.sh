@@ -12,7 +12,7 @@ fi
 
 install_package() {
 	pkg=$1
-	which $pkg > /dev/null 2>$1
+	which $pkg > /dev/null 2> /dev/null
 	if [ $? -eq 0 ]; then
 		echo "Package $pkg exists. Skipping..."
 		return 0
@@ -90,7 +90,7 @@ if [ "$ID" = "ubuntu" ]; then
 	apt-get update
 fi
 
-packages=(sudo git zsh vim)
+packages=(sudo git zsh vim go)
 for i in "${packages[@]}"; do
 
 	install_package $i

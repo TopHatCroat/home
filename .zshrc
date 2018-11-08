@@ -17,6 +17,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/home/antonio/Development
 
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
+export ZSH_CUSTOM=$HOME/.oh-my-zsh-custom
 
 # Vim setup
 mkdir -p ~/.vim/undo
@@ -25,7 +26,7 @@ mkdir -p ~/.vim/pack/tpope/start
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="example"
+ZSH_THEME="sike"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 COMPLETION_WAITING_DOTS="true"
@@ -36,15 +37,11 @@ COMPLETION_WAITING_DOTS="true"
 HIST_STAMPS="yyyy-mm-dd"
 
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git gradle kubectl golang react-native history-substring-search)
+plugins=(git gradle kubectl golang react-native)
 
 source $ZSH/oh-my-zsh.sh
 
 export EDITOR='vim'
-
-# zsh substring history search
-source $ZSH_CUSTOM/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE="true"
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -119,3 +116,7 @@ gen_passwd () {
 	python -c 'from passlib.hash import sha512_crypt; print(sha512_crypt.using(rounds=5000).hash("'"$1"'"))'
 }
 
+# oh-my-zsh plugins
+source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $ZSH_CUSTOM/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE="true"
