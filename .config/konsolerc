@@ -2,7 +2,7 @@
 DefaultProfile=Profile 2.profile
 
 [Favorite Profiles]
-Favorites=Profile 2.profile,Profile 1.profile,Profile 3.profile
+Favorites=Profile 3.profile,Profile 2.profile,Profile 1.profile
 
 [KonsoleWindow]
 ShowMenuBarByDefault=false
@@ -11,15 +11,15 @@ ShowMenuBarByDefault=false
 Height 1024=594
 Height 1050=615
 Height 1080=1012
-Height 1440=1408
+Height 1440=1041
 Height 600=568
 MenuBar=Disabled
-State=AAAA/wAAAAD9AAAAAAAABPcAAAWBAAAABAAAAAQAAAAIAAAACPwAAAAA
+State=AAAA/wAAAAD9AAAAAAAACFAAAAOgAAAABAAAAAQAAAAIAAAACPwAAAAA
 ToolBarsMovable=Disabled
 Width 1280=965
 Width 1680=1094
-Width 1920=1271
-Width 2560=1271
+Width 1920=2128
+Width 2560=1535
 Width 800=798
 
 [TabBar]

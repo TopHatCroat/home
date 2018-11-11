@@ -12,8 +12,7 @@ FirstRun=false
 Favorites=
 
 [Shortcuts]
-close-active-terminal=Ctrl+Shift+R
-close-session=Ctrl+Shift+W
+close-session=none
 decrease-window-height=Alt+Shift+Up
 decrease-window-width=Alt+Shift+Left
 file_quit=Ctrl+Shift+Q

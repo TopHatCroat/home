@@ -90,7 +90,7 @@ if [ "$ID" = "ubuntu" ]; then
 	apt-get update
 fi
 
-packages=(sudo git zsh vim go)
+packages=(sudo git zsh vim go python pandoc ruby)
 for i in "${packages[@]}"; do
 
 	install_package $i
@@ -111,6 +111,7 @@ if [ ! -d .git ]; then
 	git remote add origin $home_git_repo
 	git fetch
 	git checkout -t origin/master
+	git submodule update --init
 else
 	echo ".git folder exists in $(pwd). Skipping cloning..."
 fi
