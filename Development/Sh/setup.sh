@@ -4,6 +4,7 @@
 
 home_git_repo="https://github.com/TopHatCroat/home"
 user=""
+branch="master"
 
 if [ $(id -u) -ne 0 ]; then
   echo "Must be run as root."
@@ -51,10 +52,11 @@ print_help() {
 	echo ""
 	echo "Arguments:"
 	echo "  -u    Name of user to setup the enviroment for. It must exist."
+	echo "  -b    Name of branch to clone. Default: master"
 	echo "  -h    Print this"
 }
 
-while getopts "hu:" OPTION
+while getopts "hu:b:" OPTION
 do
 	case $OPTION in
 		h)
@@ -63,6 +65,9 @@ do
 			;;
 		u)
 			user=$OPTARG
+			;;
+		b)
+			branch=$OPTARG
 			;;
 		\?)
 			print_help
@@ -110,8 +115,7 @@ if [ ! -d .git ]; then
 	git init
 	git remote add origin $home_git_repo
 	git fetch
-	git checkout -t origin/master
-	git submodule update --init
+	git checkout -t origin/$branch
 else
 	echo ".git folder exists in $(pwd). Skipping cloning..."
 fi
