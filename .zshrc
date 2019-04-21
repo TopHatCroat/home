@@ -35,7 +35,7 @@ HIST_STAMPS="yyyy-mm-dd"
 
 # Add wisely, as too many plugins slow down shell startup.
 
-plugins=(golang react-native archlinux adb history-substring-search)
+plugins=(golang react-native archlinux adb history-substring-search zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -125,3 +125,5 @@ docker_go () {
 source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $ZSH_CUSTOM/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
 export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE="true"
+
+bindkey '^[ ' autosuggest-accept
