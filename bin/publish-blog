@@ -1,0 +1,24 @@
+#!/bin/sh
+# Build and push my blog
+
+set -e
+
+if [ -z $1 ]; then
+    echo "Usage: publish-blog COMMIT_MESSAGE"
+	exit 1
+fi
+
+cd $DEVDIR/blog
+hugo
+# Push the source
+git commit -am "$1"
+git push
+
+# Push the built files
+cd public
+git add .
+git commit -m "$1"
+git push
+
+echo "Publish successful!"
+

@@ -110,10 +110,6 @@ umls() { ls ~/.notes }
 # Search for files in current dir
 ffile() { find . -type f | fzy }
 
-publish_blog () {
-	ssh root@159.65.194.81 'bash /root/publish_script.sh'
-}
-
 # Cool guys don't look at explosions
 gg () {
 	git commit -am "'$1'" && git push
