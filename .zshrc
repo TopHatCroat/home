@@ -35,7 +35,7 @@ HIST_STAMPS="yyyy-mm-dd"
 
 # Add wisely, as too many plugins slow down shell startup.
 
-plugins=(golang react-native archlinux adb history-substring-search zsh-autosuggestions)
+plugins=(adb archlinux gradle golang react-native history-substring-search zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -46,28 +46,6 @@ export EDITOR='vim'
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/rsa_id"
-
-# ALIASES
-
-# Commands starting with space are not saved in history
-alias {ls,ls}=" ls"
-alias {cd,dc}=" cd"
-alias zshconfig="vim ~/.zshrc"
-alias vimconfig="vim ~/.vimrc"
-alias reload="source ~/.zshrc"
-alias ohmyzsh="vim ~/.oh-my-zsh"
-alias kc="kubectl"
-alias c="clipcopy"
-alias v="clippaste"
-alias cdv="cd $(clippaste)"
-alias pwdc="pwd | c"
-alias rn="react-native"
-# Open up RN menu on Android, works when only one device is connected
-alias rnmenu="adb shell input keyevent 82"
-# typos
-alias {gut,got,gti}="git"
-alias gd="git diff"
-alias gds="git diff --staged"
 
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
@@ -85,30 +63,62 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
-snitch () { netstat -tulpn | grep $1}
+# oh-my-zsh plugins
+source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $ZSH_CUSTOM/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE="true"
 
-snatch() { kill -9 $(netstat -tulpn 2>/dev/null  | grep $1 | awk '{print $7}' | cut -d / -f 1) }
+bindkey '^ ' autosuggest-accept
+
+
+# Aliases and helper methods
+
+# Commands starting with space are not saved in history
+alias {ls,ls}=" ls"
+alias {cd,dc}=" cd"
+alias zshconfig="vim ~/.zshrc"
+alias vimconfig="vim ~/.vimrc"
+alias reload="source ~/.zshrc"
+alias ohmyzsh="vim ~/.oh-my-zsh"
+alias kc="kubectl"
+alias c="clipcopy"
+alias v="clippaste"
+alias cdv="cd $(clippaste)"
+alias pwdc="pwd | c"
+alias rn="react-native"
+# Open up RN menu on Android, works when only one device is connected
+alias rnmenu="adb shell input keyevent 82"
+
+alias {gut,got,gti}="git"
+alias gd="git diff"
+alias gds="git diff --staged"
 
 # excecute last command, usefull for commands that can't pipe inputs like: rm $(lo)
 # or you can just use rm $(!!) like a sane person
 lo () {echo $(bash -c "$(fc -ln -1)")}
 
+# Parse markdown file and print it man page like
 function mdless() {
 	pandoc -s -f markdown -t man $1 | groff -T utf8 -man | less
 }
-    
+
+# Shorthand for editing notes
 umedit() { mkdir -p ~/.notes; vim ~/.notes/$1; }
 
+# Shorthand for viewing notes
 um() { mdless ~/.notes/"$1"; }
 
+# See all my notes
 umls() { ls ~/.notes }
 
+# Search for files in current dir
 ffile() { find . -type f | fzy }
 
 publish_blog () {
 	ssh root@159.65.194.81 'bash /root/publish_script.sh'
 }
 
+# Cool guys don't look at explosions
 gg () {
 	git commit -am "'$1'" && git push
 }
@@ -116,14 +126,3 @@ gg () {
 gen_passwd () {
 	python -c 'from passlib.hash import sha512_crypt; print(sha512_crypt.using(rounds=5000).hash("'"$1"'"))'
 }
-
-docker_go () {
-	docker run -i -t --entrypoint /bin/bash $1
-}
-
-# oh-my-zsh plugins
-source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source $ZSH_CUSTOM/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE="true"
-
-bindkey '^[ ' autosuggest-accept
