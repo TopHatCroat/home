@@ -64,6 +64,16 @@ export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE="true"
 
 bindkey '^ ' autosuggest-accept
 
+# Init NVM
+export NVM_DIR="$HOME/.nvm"
+if [ $(uname -s) = "Linux" ]; then
+	export NVM_SOURCE="/usr/share/nvm"
+elif [ $(uname -s) = "Darwin" ]; then
+	export NVM_SOURCE=$(brew --prefix nvm)
+fi
+[ -s "$NVM_SOURCE/nvm.sh" ] && . "$NVM_SOURCE/nvm.sh"
+
+
 
 # Aliases and helper methods
 
