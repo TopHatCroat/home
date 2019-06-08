@@ -1,0 +1,5 @@
+#!/bin/sh
+# Prints current external IP
+
+
+curl -s ipecho.net/plain | trim

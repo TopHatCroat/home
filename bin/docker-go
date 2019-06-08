@@ -1,0 +1,5 @@
+#!/bin/sh
+# Just run a docker image and jump into its shell
+# Eg. `docker-go postgres`
+
+docker run -i -t --entrypoint /bin/bash $1

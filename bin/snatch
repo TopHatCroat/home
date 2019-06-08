@@ -1,0 +1,5 @@
+#!/bin/sh
+# Kill the program using a specified port
+# Eg. `snatch 8080` 
+
+kill -9 $(netstat -tulpn 2>/dev/null | grep $1 | awk '{print $7}' | cut -d / -f 1)

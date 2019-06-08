@@ -1,0 +1,5 @@
+#!/bin/sh
+# Find which program is using a port, works in reverse as well
+# Eg. `snitch 8080` or `snitch node` 
+
+netstat -tulpn | grep $1 | tail -n 2

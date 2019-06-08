@@ -1,0 +1,4 @@
+#!/bin/sh
+# Opens a small window for copying stuff into it
+
+qarma --entry | xsel --clipboard
