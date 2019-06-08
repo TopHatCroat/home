@@ -1,16 +1,10 @@
-export PATH=/home/antonio/Development/Go/bin:$HOME/bin:/usr/local/bin:/home/antonio/Android/Sdk/tools:/home/antonio/Android/Sdk/platform-tools:/home/antonio/Development/Go/src/github.com/hyperledger/fabric/build/bin/:/home/antonio/Development/bin:$PATH
+export PATH=/home/antonio/Development/Go/bin:$HOME/bin:/usr/local/bin:$PATH
 
 export PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 
 export DEVDIR=$HOME/Development
 export GOPATH=$DEVDIR/Go
 export ANDROID_HOME=$HOME/Android/Sdk
-
-export PATH="$PATH:$GOPATH/src/github.com/hyperledger/fabric-samples"
-
-export CDPATH=$CDPATH:$DEVDIR:$GOPATH/src
-
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/home/antonio/Development/Hyperledger/indy-sdk/libindy/target/debug
 
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
@@ -92,6 +86,8 @@ alias rnmenu="adb shell input keyevent 82"
 alias {gut,got,gti}="git"
 alias gd="git diff"
 alias gds="git diff --staged"
+# Print git log as a pretty graph
+alias gpl="git log --graph --oneline --all"
 
 # excecute last command, usefull for commands that can't pipe inputs like: rm $(lo)
 # or you can just use rm $(!!) like a sane person

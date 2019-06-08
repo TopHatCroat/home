@@ -1,9 +1,11 @@
-*
-.gitignore
+# Blacklist all in this folder
+/*
+# Except for these
+!.gitignore
 !.gitconfig
 !.zshrc
 !.config/zhist
 !.notes
-!Development/Sh/*
-!Development/bin/*
+!bin/
+!Development/Sh
 
