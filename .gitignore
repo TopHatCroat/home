@@ -3,9 +3,7 @@
 # Except for these
 !.gitignore
 !.gitconfig
-!.zshrc
-!.config/zhist
-!.notes
+!.notes/
 !bin/
 !Development/Sh
 

@@ -110,7 +110,7 @@ if [ ! -d .git ]; then
 	git init
 	git remote add origin $home_git_repo
 	git fetch
-	git checkout -t origin/master
+	git reset --hard origin/master
 	git submodule update --init
 else
 	echo ".git folder exists in $(pwd). Skipping cloning..."
