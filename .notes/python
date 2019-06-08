@@ -1,0 +1,23 @@
+# Python snipets
+
+##### Benchmark your code 
+```
+import cProfile
+cProfile.run('find_double_freq(f.readlines())')
+```
+
+##### Get dict key with highest value
+```
+import operator
+max(slept_most.items(), key=operator.itemgetter(1))[0]
+```
+
+##### Sorting touples
+For sorting by multiple criteria:
+```
+data = [(1,2,3),(1,2,1),(1,1,4)]
+sorted(data, key=lambda tup: (tup[1],tup[2]) )
+[(1, 1, 4), (1, 2, 1), (1, 2, 3)]
+```
+Define a lambda that describes priority
+

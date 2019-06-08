@@ -1,0 +1,2 @@
+### Quickly run Docker container and attach to shell
+docker run -i -t --entrypoint /bin/bash <imageID>
