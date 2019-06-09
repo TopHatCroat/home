@@ -264,6 +264,8 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 
 Plug 'mbbill/undotree'
 
+Plug 'chriskempson/base16-vim'
+
 " Currently broken, see https://github.com/python-mode/python-mode/issues/951
 " Plug 'python-mode/python-mode', { 'branch': 'develop' }
 
@@ -272,6 +274,12 @@ Plug 'mbbill/undotree'
 Plug 'junegunn/goyo.vim'
 
 call plug#end()
+
+" Color from Base16
+if filereadable(expand("~/.vimrc_background"))
+  let base16colorspace=256
+  source ~/.vimrc_background
+endif
 
 " CtrlP fuzzy search
 "set runtimepath^=~/.vim/bundle/ctrlp.vim
