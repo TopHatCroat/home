@@ -1,14 +1,22 @@
-export PATH=/home/antonio/Development/Go/bin:$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/Development/Go/bin:$HOME/bin:/usr/local/bin:$PATH
 
 export PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 
 export DEVDIR=$HOME/Development
 export GOPATH=$DEVDIR/Go
-export ANDROID_HOME=$HOME/Android/Sdk
+
+if [ $(uname -s) = "Linux" ]; then
+  export ANDROID_HOME=$HOME/Android/Sdk
+elif [ $(uname -s) = "Darwin" ]; then
+  export ANDROID_HOME=$HOME/Library/Android/sdk
+fi
 
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 export ZSH_CUSTOM=$HOME/.oh-my-zsh-custom
+
+# Needed for GnuPG 2
+export GPG_TTY=$(tty)
 
 # Vim setup
 mkdir -p ~/.vim/undo
