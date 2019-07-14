@@ -5,10 +5,17 @@ export PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 export DEVDIR=$HOME/Development
 export GOPATH=$DEVDIR/Go
 
+
 if [ $(uname -s) = "Linux" ]; then
-  export ANDROID_HOME=$HOME/Android/Sdk
+  android_home=$HOME/Android/Sdk
 elif [ $(uname -s) = "Darwin" ]; then
-  export ANDROID_HOME=$HOME/Library/Android/sdk
+  android_home=$HOME/Library/Android/sdk
+fi
+
+if [ -d $android_home ]; then
+  export ANDROID_HOME=$android_home
+  export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH"
+  unset android_home
 fi
 
 # Path to your oh-my-zsh installation.
@@ -105,6 +112,7 @@ alias pwdc="pwd | c"
 alias rn="react-native"
 # Open up RN menu on Android, works when only one device is connected
 alias rnmenu="adb shell input keyevent 82"
+alias rntunnel="adb reverse tcp:8081 tcp:8081"
 
 alias {gut,got,gti}="git"
 alias gd="git diff"
