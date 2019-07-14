@@ -1,0 +1,26 @@
+#!/bin/sh
+# Deletes all React Native related cache
+
+if [ -x "$(command -v watchman)" ]; then
+	watchman watch-del-all
+fi
+
+if [ -d "$TMPDIR" ]; then
+	rm -rf $TMPDIR/react-native-packager-cache-*
+	rm -rf $TMPDIR/metro-bundler-cache-*
+	rm -rf $TMPDIR/haste-map-*
+fi
+
+rm -rf ./node_modules/
+
+if [ -x "$(command -v npm)" ]; then
+	npm cache verify
+fi
+
+if [ -x "$(command -v yarn)" ]; then
+	yarn cache clean
+fi
+echo "React Native cache cleared!"
+echo "Start the RN server using:"
+echo "    yarn && react-native start --reset-cache"
+
