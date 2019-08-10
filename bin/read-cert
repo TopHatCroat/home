@@ -1,0 +1,4 @@
+#!/bin/sh
+# Read a x509 certificate in PEM format
+
+openssl x509 -in $1 -text -noout
