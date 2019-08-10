@@ -1,14 +1,29 @@
-export PATH=/home/antonio/Development/Go/bin:$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/Development/Go/bin:$HOME/bin:/usr/local/bin:$PATH
 
 export PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 
 export DEVDIR=$HOME/Development
 export GOPATH=$DEVDIR/Go
-export ANDROID_HOME=$HOME/Android/Sdk
+
+
+if [ $(uname -s) = "Linux" ]; then
+  android_home=$HOME/Android/Sdk
+elif [ $(uname -s) = "Darwin" ]; then
+  android_home=$HOME/Library/Android/sdk
+fi
+
+if [ -d $android_home ]; then
+  export ANDROID_HOME=$android_home
+  export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH"
+  unset android_home
+fi
 
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 export ZSH_CUSTOM=$HOME/.oh-my-zsh-custom
+
+# Needed for GnuPG 2
+export GPG_TTY=$(tty)
 
 # Vim setup
 mkdir -p ~/.vim/undo
@@ -98,6 +113,7 @@ alias read-certv="clippaste > /tmp/cert.pem && read-cert /tmp/cert.pem"
 alias rn="react-native"
 # Open up RN menu on Android, works when only one device is connected
 alias rnmenu="adb shell input keyevent 82"
+alias rntunnel="adb reverse tcp:8081 tcp:8081"
 
 alias {gut,got,gti}="git"
 alias gd="git diff"

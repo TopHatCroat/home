@@ -1,0 +1,7 @@
+#! /bin/sh
+
+if [ $(uname -s) = "Linux" ]; then
+	chromium --disable-web-security $@
+elif [ $(uname -s) = "Darwin" ]; then
+	/Applications/Chromium.app/Contents/MacOS/Chromium --disable-web-security $@
+fi
