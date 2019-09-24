@@ -109,6 +109,7 @@ alias c="clipcopy"
 alias v="clippaste"
 alias cdv="cd $(clippaste)"
 alias pwdc="pwd | c"
+alias read-certv="clippaste > /tmp/cert.pem && read-cert /tmp/cert.pem"
 alias rn="react-native"
 # Open up RN menu on Android, works when only one device is connected
 alias rnmenu="adb shell input keyevent 82"
