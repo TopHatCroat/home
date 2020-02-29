@@ -20,7 +20,7 @@ install_package() {
 
 	echo "Installing package $pkg..."
 	case "$ID" in
-		arch|antergos)
+		arch|antergos|manjaro)
 			error_output=$(pacman -S --noconfirm $pkg 2>&1 >/dev/null)
 			;;
 
@@ -90,7 +90,7 @@ if [ "$ID" = "ubuntu" ]; then
 	apt-get update
 fi
 
-packages=(sudo git zsh vim go python pandoc ruby)
+packages=(sudo git zsh vim go python pandoc ruby xsel xclip)
 for i in "${packages[@]}"; do
 
 	install_package $i
@@ -100,6 +100,13 @@ for i in "${packages[@]}"; do
 	fi
 
 done
+
+# Set inotify to a reasonable value
+if [ "$ID" = "arch" ] || [ "$ID" = "antergos" ] || [ "$ID" = "manjaro" ] || ; then
+	echo fs.inotify.max_user_watches=524288 | tee /etc/sysctl.d/40-max-user-watches.conf && sysctl --system
+else
+	echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
+fi
 
 chsh $user -s $(which zsh)
 # run the rest of the script as specified user
