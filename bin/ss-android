@@ -1,0 +1,6 @@
+#! /bin/bash
+# Take a screenshot from Android emulator or device, works only with one device connected
+
+ adb shell /system/bin/screencap -p /sdcard/screenshot.png
+ adb pull /sdcard/screenshot.png $1
+

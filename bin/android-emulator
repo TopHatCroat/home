@@ -1,0 +1,32 @@
+#! /bin/bash
+
+if [ -z $ANDROID_HOME ]; then
+	echo "Error: ANDROID_HOME must be defined"
+	exit 1
+fi
+
+NAME=default_android_emu
+WORKING_DIR=$PWD
+
+cd $ANDROID_HOME/tools/bin
+ 
+if [ $(./avdmanager list avd | grep -c $NAME) -eq 0 ]; then
+	echo "Creating AVD..."
+	./avdmanager list device
+
+	echo "Input ID of device to use: "
+	read deviceId
+
+	./avdmanager create avd --abi google_apis/x86 \
+		--package "system-images;android-29;google_apis;x86" \
+		--device $deviceId \
+		--name $NAME 
+
+	echo "Created AVD named: $NAME"
+fi
+
+cd $ANDROID_HOME/emulator
+./emulator -avd $NAME >>/tmp/android-emulator.log 2>&1 &
+
+cd $WORKING_DIR
+
