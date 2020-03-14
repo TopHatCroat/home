@@ -1,0 +1,13 @@
+### Search directory for string with regex
+-h : don't output file name
+
+-P : perl-style Regex
+
+-o : print only what matches pattern
+
+First group is a zero-length look behind to find some kind of anchor before the actual text to find.
+
+Ex. ...code=ASDF.1234 -> prints only ASDF.1234
+
+    grep -hoP "(?<=code=)\w+\.\w+" *
+
