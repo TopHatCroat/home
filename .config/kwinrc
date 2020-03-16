@@ -2,12 +2,12 @@
 update_info=kwin.upd:replace-scalein-with-scale,kwin.upd:port-minimizeanimation-effect-to-js,kwin.upd:port-scale-effect-to-js,kwin.upd:port-dimscreen-effect-to-js,kwin.upd:auto-bordersize
 
 [Compositing]
-AnimationSpeed=3
+AnimationSpeed=2
 Backend=OpenGL
 Enabled=true
 GLCore=true
 GLPreferBufferSwap=a
-GLTextureFilter=2
+GLTextureFilter=1
 HiddenPreviews=5
 OpenGLIsUnsafe=false
 WindowsBlockCompositing=true
@@ -15,7 +15,7 @@ XRenderSmoothScale=false
 
 [Desktops]
 Id_1=1cec3ec7-407f-43d7-b06f-259bcfe7ee1d
-Id_2=fcefece1-3b0f-4618-8b6d-cf2659368ef6
+Number=1
 Rows=1
 
 [Effect-CoverSwitch]
@@ -66,7 +66,7 @@ DesktopLayout=org.kde.breeze.desktop
 DesktopListLayout=org.kde.breeze.desktop
 DesktopMode=1
 HighlightWindows=true
-LayoutName=big_icons
+LayoutName=org.kde.breezedark.desktop
 MinimizedMode=0
 MultiScreenMode=0
 ShowDesktopMode=0
@@ -111,11 +111,11 @@ TitlebarDoubleClickCommand=Maximize
 WindowSnapZone=10
 
 [org.kde.kdecoration2]
-BorderSize=Normal
-BorderSizeAuto=true
+BorderSize=None
+BorderSizeAuto=false
 ButtonsOnLeft=XIA
 ButtonsOnRight=F
 CloseOnDoubleClickOnMenu=false
 ShowToolTips=true
 library=org.kde.breeze
-theme=
+theme=Breeze

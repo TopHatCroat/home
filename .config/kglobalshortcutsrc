@@ -1,23 +1,29 @@
 [ActivityManager]
 _k_friendly_name=Activity Manager
+switch-to-activity-3932fe15-322c-46b3-a283-10ccfd990213=none,none,Switch to activity "Default"
 switch-to-activity-f7e1a9f3-7e62-40cd-a0b9-afb5d4de0605=none,none,Switch to activity "Default"
 
 [KDE Keyboard Layout Switcher]
+Switch keyboard layout to Croatian (US, with Croatian letters)=none,none,Switch keyboard layout to Croatian (US\\, with Croatian letters)
 Switch keyboard layout to English (intl., with AltGr dead keys)=none,none,Switch keyboard layout to English (intl.\\, with AltGr dead keys)
 Switch keyboard layout to Serbo-Croatian (US)=none,none,Switch keyboard layout to Serbo-Croatian (US)
 Switch to Next Keyboard Layout=Ctrl+Alt+K,none,Switch to Next Keyboard Layout
 _k_friendly_name=KDE Daemon
 
-[code-oss.desktop]
-_k_friendly_name=Launch Code - OSS
-_launch=Meta+C,none,Launch Code - OSS
+[com.spotify.Client.desktop]
+_k_friendly_name=Launch Spotify
+_launch=Meta+M,none,Launch Spotify
+
+[com.visualstudio.code.desktop]
+_k_friendly_name=Launch Visual Studio Code (Flatpak)
+_launch=Meta+C,none,Launch Visual Studio Code (Flatpak)
 new-empty-window=none,none,New Empty Window
 
 [firefox.desktop]
 _k_friendly_name=Launch Firefox
 _launch=Meta+F,none,Launch Firefox
-new-private-window=,none,New Private Window
-new-window=none,none,New Window
+new-private-window=Meta+Shift+P,none,New Private Window
+new-window=Meta+Shift+F,none,New Window
 
 [kaccess]
 Toggle Screen Reader On and Off=Meta+Alt+S,Meta+Alt+S,Toggle Screen Reader On and Off
@@ -35,9 +41,13 @@ _k_friendly_name=KDE Daemon
 display=Display\tMeta+P,Display\tMeta+P,Switch Display
 
 [khotkeys]
-_k_friendly_name=KDE Daemon
-{5d8cc68e-d4cc-4fd4-ac8f-9e1dbe7f4bce}=Ctrl+Alt+T,none,Launch Konsole
+_k_friendly_name=System Settings
+{8847b054-631a-4604-8244-85d045642fdd}=,none,Take Full Screen Screenshot
+{b20574fa-991b-4ae7-94d6-59b747f0a604}=,none,Start Screenshot Tool
+{b7cde722-c4b3-4cde-bcc9-c11acea8e7f5}=,none,Take Active Window Screenshot
 {d03619b6-9b3c-48cc-9d9c-a2aadb485550}=,none,Search
+{e3060bc8-d8d6-4471-a703-495e5da2e2d6}=,none,Launch Konsole
+{e4c4702b-a266-4fc9-93d9-da4d795690e3}=Meta+Shift+Print,none,Take Rectangular Region Screenshot
 
 [kmix]
 _k_friendly_name=Audio Volume
@@ -59,7 +69,7 @@ Lock Session=Meta+L\tCtrl+Alt+L\tScreensaver,Meta+L\tCtrl+Alt+L\tScreensaver,Loc
 Log Out=Ctrl+Alt+Del,none,Log Out
 Log Out Without Confirmation=Ctrl+Alt+Shift+Del,none,Log Out Without Confirmation
 Reboot Without Confirmation=Ctrl+Alt+Shift+PgUp,none,Reboot Without Confirmation
-_k_friendly_name=ksmserver
+_k_friendly_name=System Settings
 
 [kwin]
 Activate Window Demanding Attention=Ctrl+Alt+A,Ctrl+Alt+A,Activate Window Demanding Attention
@@ -223,8 +233,8 @@ _k_friendly_name=Dolphin
 _launch=Meta+E,Meta+E,Dolphin
 
 [org.kde.konsole.desktop]
-NewTab=,none,Open a New Tab
-NewWindow=none,none,Open a New Window
+NewTab=Meta+Alt+T,none,Open a New Tab
+NewWindow=Meta+Shift+T,none,Open a New Window
 _k_friendly_name=Launch Konsole
 _launch=Meta+T,none,Launch Konsole
 
@@ -261,7 +271,7 @@ Turn Off Screen=none,none,Turn Off Screen
 _k_friendly_name=Power Management
 
 [plasmashell]
-_k_friendly_name=Plasma
+_k_friendly_name=Activity switching
 activate task manager entry 1=Meta+1,Meta+1,Activate Task Manager Entry 1
 activate task manager entry 10=Meta+0,Meta+0,Activate Task Manager Entry 10
 activate task manager entry 2=Meta+2,Meta+2,Activate Task Manager Entry 2
@@ -272,7 +282,9 @@ activate task manager entry 6=Meta+6,Meta+6,Activate Task Manager Entry 6
 activate task manager entry 7=Meta+7,Meta+7,Activate Task Manager Entry 7
 activate task manager entry 8=Meta+8,Meta+8,Activate Task Manager Entry 8
 activate task manager entry 9=Meta+9,Meta+9,Activate Task Manager Entry 9
+activate widget 18=none,none,Activate Software Updates Widget
 activate widget 2=Alt+F1,none,Activate Application Launcher Widget
+activate widget 4=,none,Activate Application Launcher Widget
 clear-history=none,none,Clear Clipboard History
 clipboard_action=Ctrl+Alt+X,Ctrl+Alt+X,Enable Clipboard Actions
 cycleNextAction=none,none,Next History Item
@@ -286,10 +298,6 @@ show dashboard=Ctrl+F12,Ctrl+F12,Show Desktop
 show-barcode=none,none,Show Barcode...
 show-on-mouse-pos=none,none,Open Klipper at Mouse Position
 stop current activity=Meta+S,Meta+S,Stop Current Activity
-
-[spotify.desktop]
-_k_friendly_name=Launch Spotify
-_launch=Meta+M,none,Launch Spotify
 
 [yakuake]
 _k_friendly_name=Yakuake
