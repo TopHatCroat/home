@@ -1,16 +1,73 @@
 #! /bin/bash
+# Install Android emulator if missing and then run it
 
-if [ -z $ANDROID_HOME ]; then
-	echo "Error: ANDROID_HOME must be defined"
-	exit 1
+set -e
+
+print_help() {
+        echo "Install, run or delete Android emulator device"
+        echo ""
+        echo "Usage: android-emulator [-n name][-d]"
+        echo ""
+        echo "Arguments:"
+        echo "  -n    Name of the emulator, default $NAME"
+        echo "  -d    Delete the emulator"
+        echo "  -h    Print this"
+}
+
+if [ ! -d $ANDROID_HOME ]; then
+	die "Error: ANDROID_HOME must be defined"
 fi
 
+IMAGE_PACKAGE="system-images;android-29;google_apis;x86"
 NAME=default_android_emu
 WORKING_DIR=$PWD
+DELETE_EMULATOR_OPTION=0
 
-cd $ANDROID_HOME/tools/bin
- 
+if [ -d $ANDROID_HOME/tools/bin ]; then
+	TOOLS_DIR=$ANDROID_HOME/tools/bin
+else
+	TOOLS_DIR=$ANDROID_HOME/cmdline-tools/latest/bin/
+fi
+
+cd $TOOLS_DIR
+
+while :; do
+	case $1 in
+		-n|--name)
+			if [ "$2" ]; then
+				NAME=$2
+			else
+				die "Error: --name requires a non-empty emulator name"
+			fi
+            ;;
+        -d|--delete)
+			DELETE_EMULATOR_OPTION=1
+            ;;
+		-h|--help)
+			print_help
+			exit 0
+			;;
+        -?*)
+			echo "Error: Unknown option: $1"
+            exit 0
+            ;;
+		*)
+			break
+    esac
+
+	shift
+done
+
+if [ $DELETE_EMULATOR_OPTION -eq 1 ]; then
+	./avdmanager delete avd --name $NAME
+	cd $PWD
+	exit 0
+fi
+
 if [ $(./avdmanager list avd | grep -c $NAME) -eq 0 ]; then
+	echo "Getting Android image..."
+	./sdkmanager --install $IMAGE_PACKAGE
+
 	echo "Creating AVD..."
 	./avdmanager list device
 
@@ -18,15 +75,17 @@ if [ $(./avdmanager list avd | grep -c $NAME) -eq 0 ]; then
 	read deviceId
 
 	./avdmanager create avd --abi google_apis/x86 \
-		--package "system-images;android-29;google_apis;x86" \
+		--package $IMAGE_PACKAGE \
 		--device $deviceId \
 		--name $NAME 
+
+	echo "hw.keyboard=yes" >> ~/.android/avd/$NAME.avd/config.ini
 
 	echo "Created AVD named: $NAME"
 fi
 
 cd $ANDROID_HOME/emulator
-./emulator -avd $NAME >/tmp/android-emulator.log 2>&1 &
+./emulator -avd $NAME -no-snapshot-load >/tmp/android-emulator.log 2>&1 &
 
 cd $WORKING_DIR
 

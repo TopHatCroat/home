@@ -1,11 +1,12 @@
 [user]
-	email = martinovic.antonio@gmail.com
+	email = antonio.martinovic@pm.me
 	name = Antonio Martinović
 [alias]
 	co = checkout
 	br = branch
 	ci = commit
 	st = status
+	cp = cherry-pick
 [core]
 	autocrlf = input
 	editor = vim

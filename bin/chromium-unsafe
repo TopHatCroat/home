@@ -1,7 +1,11 @@
 #! /bin/sh
 
 if [ $(uname -s) = "Linux" ]; then
-	chromium --disable-web-security $@
+	if [ $(command -v chromium) ]; then # if command exists
+		chromium --disable-web-security --user-data-dir=/tmp/chrome-user-data $@
+	else
+		chromium-browser --disable-web-security --user-data-dir=/tmp/chrome-user-data $@
+	fi
 elif [ $(uname -s) = "Darwin" ]; then
-	/Applications/Chromium.app/Contents/MacOS/Chromium --disable-web-security $@
+	/Applications/Chromium.app/Contents/MacOS/Chromium --disable-web-security --user-data-dir=/tmp/chrome-user-data $@
 fi

@@ -1,4 +1,6 @@
-export PATH=$HOME/Development/Go/bin:$HOME/bin:/usr/local/bin:$PATH
+source /etc/profile.d/gradle.sh
+
+export PATH=$HOME/Development/Go/bin:$HOME/bin:/usr/local/bin:$PATH:$HOME/.local/bin
 
 export PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 
@@ -44,7 +46,7 @@ HIST_STAMPS="yyyy-mm-dd"
 
 # Add wisely, as too many plugins slow down shell startup.
 
-plugins=(adb archlinux gradle golang react-native history-substring-search zsh-autosuggestions)
+plugins=(adb yarn fedora gradle golang react-native history-substring-search zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -82,11 +84,11 @@ bindkey '^ ' autosuggest-accept
 # Init NVM
 export NVM_DIR="$HOME/.nvm"
 if [ $(uname -s) = "Linux" ]; then
-	export NVM_SOURCE="/usr/share/nvm"
+	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 elif [ $(uname -s) = "Darwin" ]; then
 	export NVM_SOURCE=$(brew --prefix nvm)
+	[ -s "$NVM_SOURCE/nvm.sh" ] && . "$NVM_SOURCE/nvm.sh"
 fi
-[ -s "$NVM_SOURCE/nvm.sh" ] && . "$NVM_SOURCE/nvm.sh"
 
 # Base16 Shell
 BASE16_SHELL="$HOME/.config/base16-shell/"
@@ -123,7 +125,7 @@ alias gpl="git log --graph --oneline --all"
 
 # excecute last command, usefull for commands that can't pipe inputs like: rm $(lo)
 # or you can just use rm $(!!) like a sane person
-lo () {echo $(bash -c "$(fc -ln -1)")}
+lo () { echo $(bash -c "$(fc -ln -1)") }
 
 # Parse markdown file and print it man page like
 function mdless() {
@@ -143,14 +145,11 @@ umls() { ls ~/.notes }
 ffile() { find . -type f | fzy }
 
 # Cool guys don't look at explosions
-gg () {
-	git commit -am "'$1'" && git push
-}
+# gg () { git commit -am "'$1'" && git push }
 
 gen_passwd () {
 	python -c 'from passlib.hash import sha512_crypt; print(sha512_crypt.using(rounds=5000).hash("'"$1"'"))'
 }
-
 
 export VOLTA_HOME="/home/antonio/.volta"
 grep --silent "$VOLTA_HOME/bin" <<< $PATH || export PATH="$VOLTA_HOME/bin:$PATH"
