@@ -1,2 +1,9 @@
 ### Quickly run Docker container and attach to shell
 docker run -i -t --entrypoint /bin/bash <imageID>
+
+### Delete all containers and images
+docker rm -vf $(docker ps -a -q)
+
+### Delete all images
+docker rmi -f $(docker images -a -q)
+

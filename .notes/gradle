@@ -1,0 +1,2 @@
+### Remove Gradle locks on all files
+  find ~/.gradle -type f -name "*.lock" -delete

@@ -1,0 +1,12 @@
+#! /bin/bash
+# Export log diff between 2 branches and output it to CSV
+
+git fetch
+
+FIRST_BRANCH_NAME=${1:-release}
+SECOND_BRANCH_NAME=${2:-master}
+
+OUTPUT_FILE_NAME=${FIRST_BRANCH_NAME}_${SECOND_BRANCH_NAME}_$(date +"%Y-%m-%d_%H-%M").csv
+
+git log $FIRST_BRANCH_NAME..$SECOND_BRANCH_NAME --pretty=format:'%an,%ar,%h,%s' > $OUTPUT_FILE_NAME
+echo -en "\n" >> $OUTPUT_FILE_NAME
