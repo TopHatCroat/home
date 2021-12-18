@@ -123,6 +123,8 @@ alias gds="git diff --staged"
 # Print git log as a pretty graph
 alias gpl="git log --graph --oneline --all"
 
+# aoways use home alias with git in home dir
+alias home='git --work-tree=$HOME --git-dir=$HOME/.homegit'
 # excecute last command, usefull for commands that can't pipe inputs like: rm $(lo)
 # or you can just use rm $(!!) like a sane person
 lo () { echo $(bash -c "$(fc -ln -1)") }

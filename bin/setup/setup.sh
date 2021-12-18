@@ -5,6 +5,8 @@
 home_git_repo="https://github.com/TopHatCroat/home"
 user=""
 
+alias home='git --work-tree=$HOME --git-dir=$HOME/.homegit'
+
 if [ $(id -u) -ne 0 ]; then
   echo "Must be run as root."
   exit
@@ -113,23 +115,27 @@ chsh $user -s $(which zsh)
 sudo -i -u $user /bin/bash << EOF
 
 cd ~
-if [ ! -d .git ]; then
-	git init
-	git remote add origin $home_git_repo
-	git fetch
-	git reset --hard origin/master
-	git submodule update --init
+if [ ! -d .homegit ]; then
+    alias home='git --work-tree=$HOME --git-dir=$HOME/.homegit'
+
+	home init
+	home remote add origin $home_git_repo
+	home fetch
+	home reset --hard origin/master
+	home submodule update --init
 else
-	echo ".git folder exists in $(pwd). Skipping cloning..."
+	echo ".homegit folder exists in $(pwd). Skipping cloning..."
 fi
 
 # refresh font cache to make fonts in ~/.fonts accessible
-echo "Refreshing font cache..."
-fc-cache -fv > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-	# Sometimes fc-cache is unavailable, like in some Docker containers
-	echo "Unable to refresh font cache. Skipping..."
-	exit 1
+if command -v <the_command> &> /dev/null; then
+	echo "Refreshing font cache..."
+	fc-cache -fv > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		# Sometimes fc-cache is unavailable, like in some Docker containers
+		echo "Unable to refresh font cache. Skipping..."
+		exit 1
+	fi
 fi
 
 EOF
