@@ -2,4 +2,9 @@
 # Kill the program using a specified port
 # Eg. `snatch 8080` 
 
-kill -9 $(netstat -tulpn 2>/dev/null | grep $1 | awk '{print $7}' | cut -d / -f 1)
+if [[ $OSTYPE == 'darwin'* ]]; then
+	kill -9 $(lsof -i :$1 | awk 'FNR==1{next} {print $2}' | cut -d / -f 1)
+else
+	kill -9 $(netstat -tulpn 2>/dev/null | grep $1 | awk '{print $7}' | cut -d / -f 1)
+fi
+

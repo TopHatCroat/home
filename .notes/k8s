@@ -1,0 +1,2 @@
+Use local docker images with Minikube
+	eval $(minikube docker-env)

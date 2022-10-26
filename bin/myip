@@ -1,0 +1,13 @@
+#!/bin/sh
+# Opens a small window for copying stuff into it
+
+echo "Local network IP:"
+if [[ "$(uname)" == "Darwin" ]]; then
+  ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1' | head -n1
+elif [[ "$(expr substr $(uname -s) 1 5)" == "Linux" ]]; then
+  ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1' | head -n1
+fi
+
+echo "Public IP:"
+dig +short myip.opendns.com @resolver1.opendns.com
+

@@ -1,5 +1,3 @@
-source /etc/profile.d/gradle.sh
-
 export PATH=$HOME/Development/Go/bin:$HOME/bin:/usr/local/bin:$PATH:$HOME/.local/bin
 
 export PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
@@ -12,6 +10,7 @@ if [ $(uname -s) = "Linux" ]; then
   android_home=$HOME/Android/Sdk
 elif [ $(uname -s) = "Darwin" ]; then
   android_home=$HOME/Library/Android/sdk
+  export GOROOT="$(brew --prefix golang)/libexec"
 fi
 
 if [ -d $android_home ]; then
@@ -46,7 +45,7 @@ HIST_STAMPS="yyyy-mm-dd"
 
 # Add wisely, as too many plugins slow down shell startup.
 
-plugins=(adb yarn fedora gradle golang react-native history-substring-search zsh-autosuggestions)
+plugins=(git adb yarn gradle golang react-native terraform history-substring-search zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -70,8 +69,11 @@ bindkey -v
 # The following lines were added by compinstall
 zstyle :compinstall filename '~/.zshrc'
 
+# Stripe CLI completion 
+fpath=(~/bin/setup/stripe/stripe-completion.zsh $fpath)
+
 autoload -Uz compinit
-compinit
+compinit -it
 # End of lines added by compinstall
 
 # oh-my-zsh plugins
@@ -122,6 +124,11 @@ alias gd="git diff"
 alias gds="git diff --staged"
 # Print git log as a pretty graph
 alias gpl="git log --graph --oneline --all"
+alias tf="terraform"
+
+alias kc="kubectl"
+alias mkc="minikube kubectl --"
+alias getidf='. $HOME/Development/esp/esp-idf/export.sh'
 
 # aoways use home alias with git in home dir
 alias home='git --work-tree=$HOME --git-dir=$HOME/.homegit'
@@ -153,6 +160,39 @@ gen_passwd () {
 	python -c 'from passlib.hash import sha512_crypt; print(sha512_crypt.using(rounds=5000).hash("'"$1"'"))'
 }
 
-export VOLTA_HOME="/home/antonio/.volta"
+export VOLTA_HOME="$HOME/.volta"
 grep --silent "$VOLTA_HOME/bin" <<< $PATH || export PATH="$VOLTA_HOME/bin:$PATH"
+
+
+[ -s "$HOME/.jabba/jabba.sh" ] && source "$HOME/.jabba/jabba.sh"
+
+export PATH=$(brew --prefix openvpn)/sbin:$PATH
+
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
+
+
+if command -v direnv 1>/dev/null 2>&1; then
+  eval "$(direnv hook zsh)"
+fi
+
+eval "$(rbenv init - zsh)"
+
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
+        . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
+    else
+        export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
 

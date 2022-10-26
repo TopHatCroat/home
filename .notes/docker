@@ -1,9 +1,15 @@
 ### Quickly run Docker container and attach to shell
-docker run -i -t --entrypoint /bin/bash <imageID>
+`docker run -i -t --entrypoint /bin/bash <imageID>`
 
 ### Delete all containers and images
-docker rm -vf $(docker ps -a -q)
+`docker rm -vf $(docker ps -a -q)`
 
 ### Delete all images
-docker rmi -f $(docker images -a -q)
+`docker rmi -f $(docker images -a -q)`
+
+### Run with basic output (the sane one) which is usefull for debugging images
+`DOCKER_BUILDKIT=0 docker build .`
+
+Afterwards you can jump into this image to see what's going on
+`docker run --rm -it [img id] bash`
 
