@@ -14,9 +14,6 @@ elif [[ $(uname -s) == "Darwin" ]]; then
 	IS_MACOS=1
 fi;
 
-echo $IS_LINUX
-echo $IS_MACOS
-
 if [ $(id -u) -ne 0 ]; then
   echo "Must be run as root."
   exit
@@ -167,7 +164,7 @@ else
 	echo "Setting up for MacOS..."
 fi
 
-packages=(sudo git zsh vim go pyenv curl)
+packages=(sudo git zsh vim go pyenv curl asdf)
 
 if [ $IS_LINUX = 1 ]; then
 	packages+=(xsel xclip)
