@@ -45,7 +45,7 @@ HIST_STAMPS="yyyy-mm-dd"
 
 # Add wisely, as too many plugins slow down shell startup.
 
-plugins=(git adb yarn gradle golang react-native terraform history-substring-search zsh-autosuggestions)
+plugins=(git adb yarn gradle golang react-native terraform history-substring-search zsh-autosuggestions asdf)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -176,9 +176,6 @@ fi
 if command -v direnv 1>/dev/null 2>&1; then
   eval "$(direnv hook zsh)"
 fi
-
-# TODO: add Linux equivalent
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
