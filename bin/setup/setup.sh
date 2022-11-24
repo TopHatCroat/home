@@ -5,44 +5,112 @@
 home_git_repo="https://github.com/TopHatCroat/home"
 user=""
 
-alias home='git --work-tree=$HOME --git-dir=$HOME/.homegit'
+IS_LINUX=0
+IS_MACOS=0
+
+if [[ $(uname -s) == "Linux" ]]; then
+	IS_LINUX=1
+elif [[ $(uname -s) == "Darwin" ]]; then
+	IS_MACOS=1
+fi;
+
+echo $IS_LINUX
+echo $IS_MACOS
 
 if [ $(id -u) -ne 0 ]; then
   echo "Must be run as root."
   exit
 fi
 
+check_package_exists() {
+  	pkg=$1
+
+  	sudo -u "$user" bash -c "which $pkg > /dev/null 2> /dev/null"
+	  if [ $? -eq 0 ]; then
+  		return
+  	fi
+
+  	false
+}
+
 install_package() {
 	pkg=$1
-	which $pkg > /dev/null 2> /dev/null
-	if [ $? -eq 0 ]; then
-		echo "Package $pkg exists. Skipping..."
-		return 0
+
+	if check_package_exists "$pkg"; then
+      echo "Package $pkg exists. Skipping..."
+      return 0
+  fi
+
+	if [ $IS_LINUX = 1 ]; then
+		case "$ID" in
+			arch|antergos|manjaro)
+				echo "Installing $pkg using pacman..."
+				error_output=$(pacman -S --noconfirm "$pkg" 2>&1 >/dev/null)
+				;;
+
+			ubuntu)
+				echo "Installing $pkg using apt-get..."
+				error_output=$(apt-get --assume-yes install "$pkg" 2>&1 >/dev/null)
+				;;
+
+			*)
+				echo "Unsupported OS!"
+				exit 1
+
+		esac
+
+	fi
+	
+	if [ $IS_MACOS = 1 ]; then
+		echo "Installing $pkg using brew..."
+		which brew > /dev/null 2> /dev/null
+
+		if [ $? -eq 1 ]; then
+			echo "brew missing. Installing..."
+			sudo -u $user NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+		fi
+
+		error_output=$(sudo -u $user brew install $pkg 2>&1 >/dev/null)
+
 	fi
 
-	echo "Installing package $pkg..."
-	case "$ID" in
-		arch|antergos|manjaro)
-			error_output=$(pacman -S --noconfirm $pkg 2>&1 >/dev/null)
-			;;
-
-		ubuntu)
-			error_output=$(apt-get --assume-yes install $pkg 2>&1 >/dev/null)
-			;;
-
-		*)
-			echo "Unsupported OS!"
-			exit 1
-
-	esac
 
 	if test -z error_output; then
 		echo $error_output
 		return 1
-	fi
+	else
+		echo "Package $pkg installed successfully."
+	fi;
 
-	echo "Package $pkg installed successfully."
 	return 0
+}
+
+init_home_git_repo() {
+  # run the rest of the script as specified user
+  sudo -i -u "$user" /bin/bash << EOF
+cd ~
+if [ ! -d .homegit ]; then
+  git --work-tree=$HOME --git-dir=$HOME/.homegit init
+  git --work-tree=$HOME --git-dir=$HOME/.homegit remote add origin $home_git_repo
+  git --work-tree=$HOME --git-dir=$HOME/.homegit fetch
+  git --work-tree=$HOME --git-dir=$HOME/.homegit reset --hard origin/master
+  git --work-tree=$HOME --git-dir=$HOME/.homegit submodule update --init
+else
+  echo ".homegit folder exists in $(pwd). Skipping cloning..."
+fi
+
+# refresh font cache to make fonts in ~/.fonts accessible
+if command -v fs-cache &> /dev/null; then
+  echo "Refreshing font cache..."
+  fc-cache -fv > /dev/null 2>&1
+  if [ $? -ne 0 ]; then
+    # Sometimes fc-cache is unavailable, like in some Docker containers
+    echo "Unable to refresh font cache. Skipping..."
+    exit 1
+  fi
+fi
+
+EOF
 }
 
 
@@ -84,18 +152,36 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-# Sources env variables with information about Linux distro like $ID
-source /etc/os-release
-echo "Setting up for $NAME..."
+## Package installation preparation
 
-if [ "$ID" = "ubuntu" ]; then
-	apt-get update
+if [ -f "/etc/os-release" ]; then
+	# Sources env variables with information about Linux distro like $ID
+	source /etc/os-release
+
+	echo "Setting up for $NAME..."
+
+	if [ "$ID" = "ubuntu" ]; then
+		apt-get update
+	fi
+else
+	echo "Setting up for MacOS..."
 fi
 
-packages=(sudo git zsh vim go python pandoc ruby xsel xclip)
+packages=(sudo git zsh vim go pyenv curl)
+
+if [ $IS_LINUX = 1 ]; then
+	packages+=(xsel xclip)
+fi
+
+if [ $IS_MACOS = 1 ]; then
+	packages+=(gpg)
+fi
+
+## Package installation
+
 for i in "${packages[@]}"; do
 
-	install_package $i
+	install_package "$i"
 	if [ $? -ne 0 ]; then
 		echo "Error occured while installing $i."
 		exit 1
@@ -103,42 +189,47 @@ for i in "${packages[@]}"; do
 
 done
 
-# Set inotify to a reasonable value
-if [ "$ID" = "arch" ] || [ "$ID" = "antergos" ] || [ "$ID" = "manjaro" ] || ; then
-	echo fs.inotify.max_user_watches=524288 | tee /etc/sysctl.d/40-max-user-watches.conf && sysctl --system
-else
-	echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
+if ! check_package_exists "rvm"; then
+  echo "Installing rvm..."
+
+  if [ $IS_LINUX = 1 ]; then
+    sudo -u "$user" bash -c "gpg2 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
+  else
+    sudo -u "$user" bash -c "gpg --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
+  fi
+
+  sudo -u "$user" bash -c 'curl -sSL https://get.rvm.io | bash -s stable'
 fi
 
-chsh $user -s $(which zsh)
-# run the rest of the script as specified user
-sudo -i -u $user /bin/bash << EOF
+## Other setup
 
-cd ~
-if [ ! -d .homegit ]; then
-    alias home='git --work-tree=$HOME --git-dir=$HOME/.homegit'
+if [ $IS_LINUX = 1 ]; then
 
-	home init
-	home remote add origin $home_git_repo
-	home fetch
-	home reset --hard origin/master
-	home submodule update --init
-else
-	echo ".homegit folder exists in $(pwd). Skipping cloning..."
+	# Set inotify to a reasonable value
+	if [ "$ID" = "arch" ] || [ "$ID" = "antergos" ] || [ "$ID" = "manjaro" ] ; then
+		echo fs.inotify.max_user_watches=524288 | tee /etc/sysctl.d/40-max-user-watches.conf && sysctl --system
+	else
+		echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
+	fi
+
+	chsh "$user" -s $(which zsh)
+
 fi
 
-# refresh font cache to make fonts in ~/.fonts accessible
-if command -v <the_command> &> /dev/null; then
-	echo "Refreshing font cache..."
-	fc-cache -fv > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		# Sometimes fc-cache is unavailable, like in some Docker containers
-		echo "Unable to refresh font cache. Skipping..."
-		exit 1
+if [ $IS_MACOS = 1 ]; then
+	if [ ! -f "/Library/Keyboard Layouts/Croatian-US.icns" ]; then
+		echo "Missing Croatian-US-Mac layout. Downloading..."
+		sudo -u $user /bin/bash -c "curl -LJO https://github.com/kost/Croatian-US-mac/raw/master/Croatian-US.icns"
+		sudo -u $user /bin/bash -c "curl -LJO https://github.com/kost/Croatian-US-mac/raw/master/Croatian-US.keylayout"
+		mv Croatian-US.icns "/Library/Keyboard Layouts"
+		mv Croatian-US.keylayout "/Library/Keyboard Layouts"
+		echo "Done."
+		echo "Go to System Preferences -> Keyboard -> Input Sources and select Croatian US"
+		echo ""
 	fi
 fi
 
-EOF
+init_home_git_repo
 
 echo "Setup done. Log out and back in to change shell"
 echo "Have fun!"
