@@ -14,40 +14,40 @@ elif [[ $(uname -s) == "Darwin" ]]; then
 	IS_MACOS=1
 fi;
 
-if [ $(id -u) -ne 0 ]; then
-  echo "Must be run as root."
-  exit
-fi
-
 check_package_exists() {
-  	pkg=$1
+  	check_pkg=$1
 
-  	sudo -u "$user" bash -c "which $pkg > /dev/null 2> /dev/null"
-	  if [ $? -eq 0 ]; then
-  		return
-  	fi
+	if [ $IS_LINUX = 1 ]; then
+		sudo -u "$user" bash -c "which $check_pkg > /dev/null 2> /dev/null"
+	else
+		command -v $check_pkg &>/dev/null;
+	fi
+
+	if [ $? -eq 0 ]; then
+		return
+	fi
 
   	false
 }
 
 install_package() {
-	pkg=$1
+	pckg=$1
 
-	if check_package_exists "$pkg"; then
-      echo "Package $pkg exists. Skipping..."
+	if check_package_exists "$pckg"; then
+      echo "Package $pckg exists. Skipping..."
       return 0
-  fi
+  	fi
 
 	if [ $IS_LINUX = 1 ]; then
 		case "$ID" in
 			arch|antergos|manjaro)
-				echo "Installing $pkg using pacman..."
-				error_output=$(pacman -S --noconfirm "$pkg" 2>&1 >/dev/null)
+				echo "Installing $pckg using pacman..."
+				error_output=$(pacman -S --noconfirm "$pckg" 2>&1 >/dev/null)
 				;;
 
 			ubuntu)
-				echo "Installing $pkg using apt-get..."
-				error_output=$(apt-get --assume-yes install "$pkg" 2>&1 >/dev/null)
+				echo "Installing $pckg using apt-get..."
+				error_output=$(apt-get --assume-yes install "$pckg" 2>&1 >/dev/null)
 				;;
 
 			*)
@@ -59,57 +59,55 @@ install_package() {
 	fi
 	
 	if [ $IS_MACOS = 1 ]; then
-		echo "Installing $pkg using brew..."
-		which brew > /dev/null 2> /dev/null
+		echo "Installing $pckg using brew..."
 
-		if [ $? -eq 1 ]; then
+		if ! check_package_exists "brew"; then
 			echo "brew missing. Installing..."
-			sudo -u $user NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+			/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 		fi
 
-		error_output=$(sudo -u $user brew install $pkg 2>&1 >/dev/null)
-
+		error_output=$(brew install $pckg 2>&1 >/dev/null)
 	fi
-
 
 	if test -z error_output; then
 		echo $error_output
 		return 1
 	else
-		echo "Package $pkg installed successfully."
+		echo "Package $pckg installed successfully."
 	fi;
 
 	return 0
 }
 
 init_home_git_repo() {
-  # run the rest of the script as specified user
-  sudo -i -u "$user" /bin/bash << EOF
-cd ~
-if [ ! -d .homegit ]; then
-  git --work-tree=$HOME --git-dir=$HOME/.homegit init
-  git --work-tree=$HOME --git-dir=$HOME/.homegit remote add origin $home_git_repo
-  git --work-tree=$HOME --git-dir=$HOME/.homegit fetch
-  git --work-tree=$HOME --git-dir=$HOME/.homegit reset --hard origin/master
-  git --work-tree=$HOME --git-dir=$HOME/.homegit submodule update --init
-else
-  echo ".homegit folder exists in $(pwd). Skipping cloning..."
-fi
+	if [ -d .homegit ]; then
+	  	echo ".homegit folder exists in $(pwd). Skipping cloning..."
+		return
+	fi
 
-# refresh font cache to make fonts in ~/.fonts accessible
-if command -v fs-cache &> /dev/null; then
-  echo "Refreshing font cache..."
-  fc-cache -fv > /dev/null 2>&1
-  if [ $? -ne 0 ]; then
-    # Sometimes fc-cache is unavailable, like in some Docker containers
-    echo "Unable to refresh font cache. Skipping..."
-    exit 1
-  fi
-fi
+	if [ $IS_LINUX = 1 ]; then
+		# run the rest of the script as specified user
+		sudo -i -u "$user" /bin/bash << EOF
+cd ~
+git --work-tree=$HOME --git-dir=$HOME/.homegit init
+git --work-tree=$HOME --git-dir=$HOME/.homegit remote add origin $home_git_repo
+git --work-tree=$HOME --git-dir=$HOME/.homegit fetch
+git --work-tree=$HOME --git-dir=$HOME/.homegit reset --hard origin/master
+git --work-tree=$HOME --git-dir=$HOME/.homegit submodule update --init
+
+EOF 
+	else
+		/bin/bash << EOF
+cd ~
+git --work-tree=$HOME --git-dir=$HOME/.homegit init
+git --work-tree=$HOME --git-dir=$HOME/.homegit remote add origin $home_git_repo
+git --work-tree=$HOME --git-dir=$HOME/.homegit fetch
+git --work-tree=$HOME --git-dir=$HOME/.homegit reset --hard origin/master
+git --work-tree=$HOME --git-dir=$HOME/.homegit submodule update --init
 
 EOF
+	fi
 }
-
 
 print_help() {
 	echo "Bootstrap script for new enviroments. Must be run as root"
@@ -138,33 +136,41 @@ do
 	esac
 done
 
-if [ -z $user ]; then
-	echo "Argument user is required."
-	exit 1
-fi
+if [ IS_LINUX = 1 ]; then
+	if [ $(id -u) -ne 0 ]; then
+		echo "Must be run as root."
+		exit
+	fi
 
-id -u $user > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-	echo "User does not exits."
-	exit 1
-fi
+	# Linux installs run as root so we need to know who is the user to install apps to
+	if [ -z $user ]; then
+		echo "Argument user is required."
+		exit 1
 
-## Package installation preparation
+		id -u $user > /dev/null 2>&1
+		if [ $? -ne 0 ]; then
+			echo "User does not exits."
+			exit 1
+		fi
+	fi
 
-if [ -f "/etc/os-release" ]; then
-	# Sources env variables with information about Linux distro like $ID
-	source /etc/os-release
+	if [ -f "/etc/os-release" ]; then
+		# Sources env variables with information about Linux distro like $ID
+		source /etc/os-release
 
-	echo "Setting up for $NAME..."
+		echo "Setting up for $NAME..."
 
-	if [ "$ID" = "ubuntu" ]; then
-		apt-get update
+		if [ "$ID" = "ubuntu" ]; then
+			apt-get update
+		fi
 	fi
 else
 	echo "Setting up for MacOS..."
 fi
 
-packages=(sudo git zsh vim go pyenv curl asdf)
+
+# Setting up packages
+packages=(sudo git zsh vim go pyenv curl asdf docker docker-compose volta jabba)
 
 if [ $IS_LINUX = 1 ]; then
 	packages+=(xsel xclip)
@@ -175,7 +181,6 @@ if [ $IS_MACOS = 1 ]; then
 fi
 
 ## Package installation
-
 for i in "${packages[@]}"; do
 
 	install_package "$i"
@@ -183,23 +188,37 @@ for i in "${packages[@]}"; do
 		echo "Error occured while installing $i."
 		exit 1
 	fi
-
 done
 
 if ! check_package_exists "rvm"; then
-  echo "Installing rvm..."
+	echo "Installing rvm..."
 
-  if [ $IS_LINUX = 1 ]; then
-    sudo -u "$user" bash -c "gpg2 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
-  else
-    sudo -u "$user" bash -c "gpg --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
-  fi
+	if [ $IS_LINUX = 1 ]; then
+		sudo -u "$user" bash -c "gpg2 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
+	else
+		sudo -u "$user" bash -c "gpg --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
+	fi
 
-  sudo -u "$user" bash -c 'curl -sSL https://get.rvm.io | bash -s stable'
+  	sudo -u "$user" bash -c 'curl -sSL https://get.rvm.io | bash -s stable'
+
+fi
+
+
+if [ -z $JAVA_HOME ]; then
+	echo "Setting up JDK 17"
+	
+	jabba install openjdk@17
+	jabba use openjdk@17
+	jabba alias default openjdk@17.0
+fi
+
+if ! check_package_exists "node"; then
+	echo "Installing node & yarn"
+	volta install node
+	volta install yarn
 fi
 
 ## Other setup
-
 if [ $IS_LINUX = 1 ]; then
 
 	# Set inotify to a reasonable value
@@ -207,6 +226,17 @@ if [ $IS_LINUX = 1 ]; then
 		echo fs.inotify.max_user_watches=524288 | tee /etc/sysctl.d/40-max-user-watches.conf && sysctl --system
 	else
 		echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
+	fi
+
+	# refresh font cache to make fonts in ~/.fonts accessible
+	if command -v fs-cache &> /dev/null; then
+	echo "Refreshing font cache..."
+	fc-cache -fv > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		# Sometimes fc-cache is unavailable, like in some Docker containers
+		echo "Unable to refresh font cache. Skipping..."
+		exit 1
+	fi
 	fi
 
 	chsh "$user" -s $(which zsh)
@@ -221,7 +251,7 @@ if [ $IS_MACOS = 1 ]; then
 		mv Croatian-US.icns "/Library/Keyboard Layouts"
 		mv Croatian-US.keylayout "/Library/Keyboard Layouts"
 		echo "Done."
-		echo "Go to System Preferences -> Keyboard -> Input Sources and select Croatian US"
+		echo "Restart your system then go to System Preferences -> Keyboard -> Input Sources and select Croatian US"
 		echo ""
 	fi
 fi
