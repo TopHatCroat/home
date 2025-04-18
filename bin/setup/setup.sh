@@ -2,7 +2,7 @@
 #
 # This is a setup shell script to install the necessary packages and setup
 
-home_git_repo="https://github.com/TopHatCroat/home"
+home_git_repo="git@github.com:TopHatCroat/home.git"
 user=""
 
 IS_LINUX=0

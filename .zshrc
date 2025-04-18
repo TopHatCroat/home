@@ -1,10 +1,10 @@
 export PATH=$HOME/Development/Go/bin:$HOME/bin:/usr/local/bin:$PATH:$HOME/.local/bin
 
-export PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
-
 export DEVDIR=$HOME/Development
 export GOPATH=$DEVDIR/Go
 
+# Load rbenv automatically by appending
+eval "$(rbenv init - zsh)"
 
 if [ $(uname -s) = "Linux" ]; then
   android_home=$HOME/Android/Sdk
@@ -15,7 +15,7 @@ fi
 
 if [ -d $android_home ]; then
   export ANDROID_HOME=$android_home
-  export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH"
+  export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$ANDROID_HOME/emulator:$PATH"
   unset android_home
 fi
 
@@ -45,7 +45,7 @@ HIST_STAMPS="yyyy-mm-dd"
 
 # Add wisely, as too many plugins slow down shell startup.
 
-plugins=(git adb yarn gradle golang react-native terraform history-substring-search zsh-autosuggestions asdf)
+plugins=(git adb yarn gradle golang react-native terraform history-substring-search zsh-autosuggestions asdf direnv)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -83,21 +83,11 @@ export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE="true"
 
 bindkey '^ ' autosuggest-accept
 
-# Init NVM
-export NVM_DIR="$HOME/.nvm"
-if [ $(uname -s) = "Linux" ]; then
-	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-elif [ $(uname -s) = "Darwin" ]; then
-	export NVM_SOURCE=$(brew --prefix nvm)
-	[ -s "$NVM_SOURCE/nvm.sh" ] && . "$NVM_SOURCE/nvm.sh"
-fi
-
 # Base16 Shell
 BASE16_SHELL="$HOME/.config/base16-shell/"
 [ -n "$PS1" ] && \
     [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
         eval "$("$BASE16_SHELL/profile_helper.sh")"
-
 
 # Aliases and helper methods
 
@@ -154,7 +144,7 @@ umls() { ls ~/.notes }
 ffile() { find . -type f | fzy }
 
 # Cool guys don't look at explosions
-# gg () { git commit -am "'$1'" && git push }
+# gg() { git commit -am "'$1'" && git push }
 
 gen_passwd () {
 	python -c 'from passlib.hash import sha512_crypt; print(sha512_crypt.using(rounds=5000).hash("'"$1"'"))'
@@ -163,32 +153,46 @@ gen_passwd () {
 export VOLTA_HOME="$HOME/.volta"
 grep --silent "$VOLTA_HOME/bin" <<< $PATH || export PATH="$VOLTA_HOME/bin:$PATH"
 
-
 [ -s "$HOME/.jabba/jabba.sh" ] && source "$HOME/.jabba/jabba.sh"
 
 export PATH=$(brew --prefix openvpn)/sbin:$PATH
 
 if command -v pyenv 1>/dev/null 2>&1; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
   eval "$(pyenv init -)"
 fi
-
 
 if command -v direnv 1>/dev/null 2>&1; then
   eval "$(direnv hook zsh)"
 fi
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
-        . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
-    fi
+if command -v jabba 1>/dev/null 2>&1; then
+	export JABBA_VERSION=0.11.2
+	[ -s "$JABBA_HOME/jabba.sh" ] && source "$JABBA_HOME/jabba.sh"
 fi
-unset __conda_setup
-# <<< conda initialize <<<
 
+if command -v wmill 1>/dev/null 2>&1; then
+	source <(wmill completions zsh)
+fi
+
+eval "$(direnv hook zsh)"
+
+# Add OpenVPN and Postgres utils to path
+export PATH=$(brew --prefix openvpn)/sbin:$(brew --prefix postgresql@16)/bin:$PATH
+
+# bun completions
+[ -s "/Users/antonio/.bun/_bun" ] && source "/Users/antonio/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# pnpm
+export PNPM_HOME="/Users/antonio/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+
+# pnpm end
