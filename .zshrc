@@ -196,3 +196,4 @@ case ":$PATH:" in
 esac
 
 # pnpm end
+source ${HOME}/.ghcup/env
