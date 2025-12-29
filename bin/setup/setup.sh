@@ -297,24 +297,34 @@ fi
 
 if [ $IS_MACOS = 1 ]; then
 	# Install keyboard layouts into the user's ~/Library/Keyboard Layouts
-	target_dir="$(eval echo "~$user")/Library/Keyboard Layouts"
+	if [ -n "$user" ]; then
+		user_home=$(eval echo "~$user")
+	else
+		user_home="$HOME"
+	fi
+	
+	target_dir="$user_home/Library/Keyboard Layouts"
+	echo "Ensuring target dir exists: $target_dir"
 
 	if [ ! -d "$target_dir" ]; then
 		echo "Creating $target_dir"
 		mkdir -p "$target_dir"
-		chown "$user" "$target_dir" 2>/dev/null || true
+		if [ -n "$user" ] && [ "$user" != "$(whoami)" ]; then
+			chown "$user" "$target_dir" 2>/dev/null || true
+		fi
 	fi
 
 	if [ ! -f "$target_dir/Croatian-US.icns" ] || [ ! -f "$target_dir/Croatian-US.keylayout" ]; then
 		echo "Missing Croatian-US-Mac layout. Downloading..."
 		tmpdir=$(mktemp -d)
-		/bin/bash -c "cd '$tmpdir' && \
-			curl -LJO https://github.com/kost/Croatian-US-mac/raw/master/Croatian-US.icns && \
-			curl -LJO https://github.com/kost/Croatian-US-mac/raw/master/Croatian-US.keylayout"
+		curl -LJO -o "$tmpdir/Croatian-US.icns" https://github.com/kost/Croatian-US-mac/raw/master/Croatian-US.icns
+		curl -LJO -o "$tmpdir/Croatian-US.keylayout" https://github.com/kost/Croatian-US-mac/raw/master/Croatian-US.keylayout
 
 		mv -f "$tmpdir/Croatian-US.icns" "$target_dir/"
 		mv -f "$tmpdir/Croatian-US.keylayout" "$target_dir/"
-		chown "$user":"$user" "$target_dir/Croatian-US.icns" "$target_dir/Croatian-US.keylayout" 2>/dev/null || true
+		if [ -n "$user" ] && [ "$user" != "$(whoami)" ]; then
+			chown "$user":"$user" "$target_dir/Croatian-US.icns" "$target_dir/Croatian-US.keylayout" 2>/dev/null || true
+		fi
 		rm -rf "$tmpdir"
 
 		echo "Done."
