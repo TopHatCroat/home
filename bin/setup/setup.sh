@@ -80,6 +80,7 @@ install_package() {
 }
 
 init_home_git_repo() {
+<<<<<<< HEAD
 	if [ -d .homegit ]; then
 	  	echo ".homegit folder exists in $(pwd). Skipping cloning..."
 		return
@@ -107,6 +108,28 @@ git --work-tree=$HOME --git-dir=$HOME/.homegit submodule update --init
 
 EOF
 	fi
+=======
+	if [ -n "$user" ]; then
+		target_home=$(eval echo "~$user")
+	else
+		target_home="$HOME"
+	fi
+
+	if [ -d "$target_home/.homegit" ]; then
+		echo ".homegit folder exists in $target_home. Skipping cloning..."
+		return
+	fi
+
+	echo "Initializing home git repo in $target_home"
+
+	/bin/bash -c \
+		"cd '$target_home' && \
+		git --work-tree='$target_home' --git-dir='$target_home/.homegit' init && \
+		git --work-tree='$target_home' --git-dir='$target_home/.homegit' remote add origin $home_git_repo && \
+		git --work-tree='$target_home' --git-dir='$target_home/.homegit' fetch && \
+		git --work-tree='$target_home' --git-dir='$target_home/.homegit' reset --hard origin/master && \
+		git --work-tree='$target_home' --git-dir='$target_home/.homegit' submodule update --init"
+>>>>>>> 54769c2 (Fix ownership issues is setup.sh)
 }
 
 print_help() {
@@ -136,6 +159,7 @@ do
 	esac
 done
 
+<<<<<<< HEAD
 if [ IS_LINUX = 1 ]; then
 	if [ $(id -u) -ne 0 ]; then
 		echo "Must be run as root."
@@ -160,12 +184,40 @@ if [ IS_LINUX = 1 ]; then
 
 		echo "Setting up for $NAME..."
 
+=======
+# Enforce user rules depending on platform:
+# - Linux: -u <user> is required and script must be run as root
+# - macOS: default to current user if -u not provided
+if [ "$IS_LINUX" = "1" ]; then
+	if [ $(id -u) -ne 0 ]; then
+		echo "Must be run as root."
+		exit 1
+	fi
+
+	if [ -z "$user" ]; then
+		echo "Argument -u <user> is required on Linux."
+		exit 1
+	fi
+
+	id -u "$user" > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		echo "User does not exist: $user"
+		exit 1
+	fi
+
+	if [ -f "/etc/os-release" ]; then
+		source /etc/os-release
+		echo "Setting up for $NAME..."
+>>>>>>> 54769c2 (Fix ownership issues is setup.sh)
 		if [ "$ID" = "ubuntu" ]; then
 			apt-get update
 		fi
 	fi
 else
-	echo "Setting up for MacOS..."
+	if [ -z "$user" ]; then
+		user="$(whoami)"
+	fi
+	echo "Setting up for MacOS... (user: $user)"
 fi
 
 
@@ -230,13 +282,13 @@ if [ $IS_LINUX = 1 ]; then
 
 	# refresh font cache to make fonts in ~/.fonts accessible
 	if command -v fs-cache &> /dev/null; then
-	echo "Refreshing font cache..."
-	fc-cache -fv > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		# Sometimes fc-cache is unavailable, like in some Docker containers
-		echo "Unable to refresh font cache. Skipping..."
-		exit 1
-	fi
+		echo "Refreshing font cache..."
+		fc-cache -fv > /dev/null 2>&1
+		if [ $? -ne 0 ]; then
+			# Sometimes fc-cache is unavailable, like in some Docker containers
+			echo "Unable to refresh font cache. Skipping..."
+			exit 1
+		fi
 	fi
 
 	chsh "$user" -s $(which zsh)
@@ -244,14 +296,31 @@ if [ $IS_LINUX = 1 ]; then
 fi
 
 if [ $IS_MACOS = 1 ]; then
-	if [ ! -f "/Library/Keyboard Layouts/Croatian-US.icns" ]; then
+	# Install keyboard layouts into the user's ~/Library/Keyboard Layouts
+	target_dir="$(eval echo "~$user")/Library/Keyboard Layouts"
+
+	if [ ! -d "$target_dir" ]; then
+		echo "Creating $target_dir"
+		mkdir -p "$target_dir"
+		chown "$user" "$target_dir" 2>/dev/null || true
+	fi
+
+	if [ ! -f "$target_dir/Croatian-US.icns" ] || [ ! -f "$target_dir/Croatian-US.keylayout" ]; then
 		echo "Missing Croatian-US-Mac layout. Downloading..."
-		sudo -u $user /bin/bash -c "curl -LJO https://github.com/kost/Croatian-US-mac/raw/master/Croatian-US.icns"
-		sudo -u $user /bin/bash -c "curl -LJO https://github.com/kost/Croatian-US-mac/raw/master/Croatian-US.keylayout"
-		mv Croatian-US.icns "/Library/Keyboard Layouts"
-		mv Croatian-US.keylayout "/Library/Keyboard Layouts"
+		tmpdir=$(mktemp -d)
+		if [ -n "$user" ]; then
+			sudo -u "$user" /bin/bash -c "cd '$tmpdir' && curl -LJO https://github.com/kost/Croatian-US-mac/raw/master/Croatian-US.icns && curl -LJO https://github.com/kost/Croatian-US-mac/raw/master/Croatian-US.keylayout"
+		else
+			/bin/bash -c "cd '$tmpdir' && curl -LJO https://github.com/kost/Croatian-US-mac/raw/master/Croatian-US.icns && curl -LJO https://github.com/kost/Croatian-US-mac/raw/master/Croatian-US.keylayout"
+		fi
+
+		mv -f "$tmpdir/Croatian-US.icns" "$target_dir/"
+		mv -f "$tmpdir/Croatian-US.keylayout" "$target_dir/"
+		chown "$user":"$user" "$target_dir/Croatian-US.icns" "$target_dir/Croatian-US.keylayout" 2>/dev/null || true
+		rm -rf "$tmpdir"
+
 		echo "Done."
-		echo "Restart your system then go to System Preferences -> Keyboard -> Input Sources and select Croatian US"
+		echo "Log out and back in or go to System Preferences -> Keyboard -> Input Sources and select Croatian US"
 		echo ""
 	fi
 fi
