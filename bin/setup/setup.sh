@@ -80,35 +80,7 @@ install_package() {
 }
 
 init_home_git_repo() {
-<<<<<<< HEAD
-	if [ -d .homegit ]; then
-	  	echo ".homegit folder exists in $(pwd). Skipping cloning..."
-		return
-	fi
 
-	if [ $IS_LINUX = 1 ]; then
-		# run the rest of the script as specified user
-		sudo -i -u "$user" /bin/bash << EOF
-cd ~
-git --work-tree=$HOME --git-dir=$HOME/.homegit init
-git --work-tree=$HOME --git-dir=$HOME/.homegit remote add origin $home_git_repo
-git --work-tree=$HOME --git-dir=$HOME/.homegit fetch
-git --work-tree=$HOME --git-dir=$HOME/.homegit reset --hard origin/master
-git --work-tree=$HOME --git-dir=$HOME/.homegit submodule update --init
-
-EOF 
-	else
-		/bin/bash << EOF
-cd ~
-git --work-tree=$HOME --git-dir=$HOME/.homegit init
-git --work-tree=$HOME --git-dir=$HOME/.homegit remote add origin $home_git_repo
-git --work-tree=$HOME --git-dir=$HOME/.homegit fetch
-git --work-tree=$HOME --git-dir=$HOME/.homegit reset --hard origin/master
-git --work-tree=$HOME --git-dir=$HOME/.homegit submodule update --init
-
-EOF
-	fi
-=======
 	if [ -n "$user" ]; then
 		target_home=$(eval echo "~$user")
 	else
@@ -129,7 +101,6 @@ EOF
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' fetch && \
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' reset --hard origin/main && \
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' submodule update --init"
->>>>>>> 54769c2 (Fix ownership issues is setup.sh)
 }
 
 print_help() {
@@ -159,32 +130,6 @@ do
 	esac
 done
 
-<<<<<<< HEAD
-if [ IS_LINUX = 1 ]; then
-	if [ $(id -u) -ne 0 ]; then
-		echo "Must be run as root."
-		exit
-	fi
-
-	# Linux installs run as root so we need to know who is the user to install apps to
-	if [ -z $user ]; then
-		echo "Argument user is required."
-		exit 1
-
-		id -u $user > /dev/null 2>&1
-		if [ $? -ne 0 ]; then
-			echo "User does not exits."
-			exit 1
-		fi
-	fi
-
-	if [ -f "/etc/os-release" ]; then
-		# Sources env variables with information about Linux distro like $ID
-		source /etc/os-release
-
-		echo "Setting up for $NAME..."
-
-=======
 # Enforce user rules depending on platform:
 # - Linux: -u <user> is required and script must be run as root
 # - macOS: default to current user if -u not provided
@@ -208,7 +153,6 @@ if [ "$IS_LINUX" = "1" ]; then
 	if [ -f "/etc/os-release" ]; then
 		source /etc/os-release
 		echo "Setting up for $NAME..."
->>>>>>> 54769c2 (Fix ownership issues is setup.sh)
 		if [ "$ID" = "ubuntu" ]; then
 			apt-get update
 		fi
@@ -317,8 +261,8 @@ if [ $IS_MACOS = 1 ]; then
 	if [ ! -f "$target_dir/Croatian-US.icns" ] || [ ! -f "$target_dir/Croatian-US.keylayout" ]; then
 		echo "Missing Croatian-US-Mac layout. Downloading..."
 		tmpdir=$(mktemp -d)
-		curl -LJO -o "$tmpdir/Croatian-US.icns" https://github.com/kost/Croatian-US-mac/raw/main/Croatian-US.icns
-		curl -LJO -o "$tmpdir/Croatian-US.keylayout" https://github.com/kost/Croatian-US-mac/raw/main/Croatian-US.keylayout
+		curl -L -o "$tmpdir/Croatian-US.icns" https://github.com/kost/Croatian-US-mac/raw/main/Croatian-US.icns
+		curl -L -o "$tmpdir/Croatian-US.keylayout" https://github.com/kost/Croatian-US-mac/raw/main/Croatian-US.keylayout
 
 		mv -f "$tmpdir/Croatian-US.icns" "$target_dir/"
 		mv -f "$tmpdir/Croatian-US.keylayout" "$target_dir/"
