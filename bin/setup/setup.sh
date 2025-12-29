@@ -127,7 +127,7 @@ EOF
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' init && \
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' remote add origin $home_git_repo && \
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' fetch && \
-		git --work-tree='$target_home' --git-dir='$target_home/.homegit' reset --hard origin/master && \
+		git --work-tree='$target_home' --git-dir='$target_home/.homegit' reset --hard origin/main && \
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' submodule update --init"
 >>>>>>> 54769c2 (Fix ownership issues is setup.sh)
 }
@@ -317,8 +317,8 @@ if [ $IS_MACOS = 1 ]; then
 	if [ ! -f "$target_dir/Croatian-US.icns" ] || [ ! -f "$target_dir/Croatian-US.keylayout" ]; then
 		echo "Missing Croatian-US-Mac layout. Downloading..."
 		tmpdir=$(mktemp -d)
-		curl -LJO -o "$tmpdir/Croatian-US.icns" https://github.com/kost/Croatian-US-mac/raw/master/Croatian-US.icns
-		curl -LJO -o "$tmpdir/Croatian-US.keylayout" https://github.com/kost/Croatian-US-mac/raw/master/Croatian-US.keylayout
+		curl -LJO -o "$tmpdir/Croatian-US.icns" https://github.com/kost/Croatian-US-mac/raw/main/Croatian-US.icns
+		curl -LJO -o "$tmpdir/Croatian-US.keylayout" https://github.com/kost/Croatian-US-mac/raw/main/Croatian-US.keylayout
 
 		mv -f "$tmpdir/Croatian-US.icns" "$target_dir/"
 		mv -f "$tmpdir/Croatian-US.keylayout" "$target_dir/"
