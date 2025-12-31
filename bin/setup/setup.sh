@@ -166,7 +166,7 @@ fi
 
 
 # Setting up packages
-packages=(sudo git zsh vim go pyenv curl asdf docker docker-compose volta jabba)
+packages=(sudo git zsh vim curl docker docker-compose)
 
 if [ $IS_LINUX = 1 ]; then
 	packages+=(xsel xclip)
@@ -191,19 +191,20 @@ if ! check_package_exists "mise"; then
 	curl https://mise.run | sh
 fi
 
-
 if [ -z $JAVA_HOME ]; then
 	echo "Setting up JDK 17"
-	
-	jabba install openjdk@17
-	jabba use openjdk@17
-	jabba alias default openjdk@17.0
+	mise use -g java@temurin  
 fi
 
 if ! check_package_exists "node"; then
-	echo "Installing node & yarn"
-	volta install node
-	volta install yarn
+	echo "Installing node & pnpm"
+	mise use -g node@lts
+	mise use -g pnpm@latest
+fi
+
+if ! check_package_exists "bun"; then
+	echo "Installing bun"
+	mise use -g bun@latest
 fi
 
 ## Other setup
@@ -240,7 +241,6 @@ if [ $IS_MACOS = 1 ]; then
 	fi
 	
 	target_dir="$user_home/Library/Keyboard Layouts"
-	echo "Ensuring target dir exists: $target_dir"
 
 	if [ ! -d "$target_dir" ]; then
 		echo "Creating $target_dir"
@@ -266,6 +266,8 @@ if [ $IS_MACOS = 1 ]; then
 		echo "Done."
 		echo "Log out and back in or go to System Preferences -> Keyboard -> Input Sources and select Croatian US"
 		echo ""
+	else
+		echo "Croatian-US-Mac layout already installed. Skipping..."
 	fi
 fi
 
