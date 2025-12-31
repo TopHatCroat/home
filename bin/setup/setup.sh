@@ -261,8 +261,8 @@ if [ $IS_MACOS = 1 ]; then
 	if [ ! -f "$target_dir/Croatian-US.icns" ] || [ ! -f "$target_dir/Croatian-US.keylayout" ]; then
 		echo "Missing Croatian-US-Mac layout. Downloading..."
 		tmpdir=$(mktemp -d)
-		curl -L -o "$tmpdir/Croatian-US.icns" https://github.com/kost/Croatian-US-mac/raw/main/Croatian-US.icns
-		curl -L -o "$tmpdir/Croatian-US.keylayout" https://github.com/kost/Croatian-US-mac/raw/main/Croatian-US.keylayout
+		curl -L -o "$tmpdir/Croatian-US.icns" https://raw.githubusercontent.com/kost/Croatian-US-mac/master/Croatian-US.icns
+		curl -L -o "$tmpdir/Croatian-US.keylayout" https://raw.githubusercontent.com/kost/Croatian-US-mac/master/Croatian-US.keylayout
 
 		mv -f "$tmpdir/Croatian-US.icns" "$target_dir/"
 		mv -f "$tmpdir/Croatian-US.keylayout" "$target_dir/"
