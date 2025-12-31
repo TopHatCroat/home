@@ -186,17 +186,9 @@ for i in "${packages[@]}"; do
 	fi
 done
 
-if ! check_package_exists "rvm"; then
-	echo "Installing rvm..."
-
-	if [ $IS_LINUX = 1 ]; then
-		sudo -u "$user" bash -c "gpg2 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
-	else
-		sudo -u "$user" bash -c "gpg --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
-	fi
-
-  	sudo -u "$user" bash -c 'curl -sSL https://get.rvm.io | bash -s stable'
-
+if ! check_package_exists "mise"; then
+	echo "Installing mise..."
+	curl https://mise.run | sh
 fi
 
 
