@@ -167,7 +167,7 @@ fi
 user_home=$(eval echo "~$user")
 
 # Setting up packages
-packages=(sudo git zsh vim curl docker docker-compose alacritty)
+packages=(sudo git zsh vim curl docker docker-compose alacritty starship)
 
 if [ $IS_LINUX = 1 ]; then
 	packages+=(xsel xclip)

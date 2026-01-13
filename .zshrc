@@ -29,11 +29,6 @@ export GPG_TTY=$(tty)
 mkdir -p ~/.vim/undo
 mkdir -p ~/.vim/pack/tpope/start
 
-# Set name of the theme to load. Optionally, if you set this to "random"
-# it'll load a random theme each time that oh-my-zsh is loaded.
-# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="sike"
-
 # Uncomment the following line to display red dots whilst waiting for completion.
 COMPLETION_WAITING_DOTS="true"
 
@@ -44,7 +39,7 @@ HIST_STAMPS="yyyy-mm-dd"
 
 # Add wisely, as too many plugins slow down shell startup.
 
-plugins=(git adb gradle golang react-native terraform history-substring-search zsh-autosuggestions mise)
+plugins=(git adb gradle golang react-native terraform history-substring-search zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -154,4 +149,6 @@ export PATH=$(brew --prefix openvpn)/sbin:$(brew --prefix postgresql@16)/bin:$PA
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+eval "$(starship init zsh)"
 
