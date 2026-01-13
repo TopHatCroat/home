@@ -3,8 +3,7 @@ export PATH=$HOME/Development/Go/bin:$HOME/bin:/usr/local/bin:$PATH:$HOME/.local
 export DEVDIR=$HOME/Development
 export GOPATH=$DEVDIR/Go
 
-# Load rbenv automatically by appending
-eval "$(rbenv init - zsh)"
+eval "$($HOME/.local/bin/mise activate zsh)"
 
 if [ $(uname -s) = "Linux" ]; then
   android_home=$HOME/Android/Sdk
@@ -45,7 +44,7 @@ HIST_STAMPS="yyyy-mm-dd"
 
 # Add wisely, as too many plugins slow down shell startup.
 
-plugins=(git adb yarn gradle golang react-native terraform history-substring-search zsh-autosuggestions asdf direnv)
+plugins=(git adb gradle golang react-native terraform history-substring-search zsh-autosuggestions mise)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -150,50 +149,9 @@ gen_passwd () {
 	python -c 'from passlib.hash import sha512_crypt; print(sha512_crypt.using(rounds=5000).hash("'"$1"'"))'
 }
 
-export VOLTA_HOME="$HOME/.volta"
-grep --silent "$VOLTA_HOME/bin" <<< $PATH || export PATH="$VOLTA_HOME/bin:$PATH"
-
-[ -s "$HOME/.jabba/jabba.sh" ] && source "$HOME/.jabba/jabba.sh"
-
-export PATH=$(brew --prefix openvpn)/sbin:$PATH
-
-if command -v pyenv 1>/dev/null 2>&1; then
-  export PYENV_ROOT="$HOME/.pyenv"
-  [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-  eval "$(pyenv init -)"
-fi
-
-if command -v direnv 1>/dev/null 2>&1; then
-  eval "$(direnv hook zsh)"
-fi
-
-if command -v jabba 1>/dev/null 2>&1; then
-	export JABBA_VERSION=0.11.2
-	[ -s "$JABBA_HOME/jabba.sh" ] && source "$JABBA_HOME/jabba.sh"
-fi
-
-if command -v wmill 1>/dev/null 2>&1; then
-	source <(wmill completions zsh)
-fi
-
-eval "$(direnv hook zsh)"
-
 # Add OpenVPN and Postgres utils to path
 export PATH=$(brew --prefix openvpn)/sbin:$(brew --prefix postgresql@16)/bin:$PATH
 
 # bun completions
-[ -s "/Users/antonio/.bun/_bun" ] && source "/Users/antonio/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-# pnpm
-export PNPM_HOME="/Users/antonio/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-
-# pnpm end
-source ${HOME}/.ghcup/env
