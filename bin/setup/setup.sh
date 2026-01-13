@@ -34,8 +34,8 @@ install_package() {
 	pckg=$1
 
 	if check_package_exists "$pckg"; then
-      echo "Package $pckg exists. Skipping..."
-      return 0
+		echo "Package $pckg exists. Skipping..."
+		return 0
   	fi
 
 	if [ $IS_LINUX = 1 ]; then
@@ -164,6 +164,7 @@ else
 	echo "Setting up for MacOS... (user: $user)"
 fi
 
+user_home=$(eval echo "~$user")
 
 # Setting up packages
 packages=(sudo git zsh vim curl docker docker-compose)
@@ -234,12 +235,6 @@ fi
 
 if [ $IS_MACOS = 1 ]; then
 	# Install keyboard layouts into the user's ~/Library/Keyboard Layouts
-	if [ -n "$user" ]; then
-		user_home=$(eval echo "~$user")
-	else
-		user_home="$HOME"
-	fi
-	
 	target_dir="$user_home/Library/Keyboard Layouts"
 
 	if [ ! -d "$target_dir" ]; then
@@ -272,6 +267,11 @@ if [ $IS_MACOS = 1 ]; then
 fi
 
 init_home_git_repo
+
+if [ $IS_MACOS = 1 ]; then
+	# Install fonts
+	cp $user_home/.fonts/* "$user_home/Library/Fonts/"
+fi
 
 echo "Setup done. Log out and back in to change shell"
 echo "Have fun!"
