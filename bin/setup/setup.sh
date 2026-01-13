@@ -174,7 +174,7 @@ if [ $IS_LINUX = 1 ]; then
 fi
 
 if [ $IS_MACOS = 1 ]; then
-	packages+=(gpg)
+	packages+=(gpg docker-desktop)
 fi
 
 ## Package installation

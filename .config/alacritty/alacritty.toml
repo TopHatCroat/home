@@ -2,7 +2,7 @@
 history = 100000
 
 [font]
-normal = { family = "Input", style = "Regular" }
+normal = { family = "Input Nerd Font Mono", style = "Regular" }
 size = 13
 
 # Colors (Dracula)
