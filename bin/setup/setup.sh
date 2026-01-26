@@ -94,13 +94,46 @@ init_home_git_repo() {
 
 	echo "Initializing home git repo in $target_home"
 
-	/bin/bash -c \
-		"cd '$target_home' && \
+	git_cmd="cd '$target_home' && \
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' init && \
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' remote add origin $home_git_repo && \
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' fetch && \
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' reset --hard origin/main && \
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' submodule update --init"
+
+	if [ "$IS_LINUX" = "1" ] && [ -n "$user" ]; then
+		sudo -u "$user" /bin/bash -c "$git_cmd"
+	else
+		/bin/bash -c "$git_cmd"
+	fi
+}
+
+setup_vscode_settings_symlink() {
+	# Canonical settings live in the Linux-default location.
+	source_settings="$user_home/.config/Code/User/settings.json"
+
+	# Only symlink on macOS; Linux already uses this location.
+	if [ "$IS_MACOS" != "1" ]; then
+		return 0
+	fi
+
+	target_dir="$user_home/Library/Application Support/Code/User"
+	target_settings="$target_dir/settings.json"
+
+	if [ ! -f "$source_settings" ]; then
+		echo "VS Code settings not found at $source_settings. Skipping symlink."
+		return 0
+	fi
+
+	mkdir -p "$target_dir"
+
+	echo "Linking VS Code settings: $target_settings -> $source_settings"
+	if [ "$(id -u)" = "0" ] && [ -n "$user" ] && [ "$user" != "root" ]; then
+		chown "$user":"$user" "$target_dir" 2>/dev/null || true
+		sudo -u "$user" ln -sfn "$source_settings" "$target_settings"
+	else
+		ln -sfn "$source_settings" "$target_settings"
+	fi
 }
 
 print_help() {
@@ -167,7 +200,7 @@ fi
 user_home=$(eval echo "~$user")
 
 # Setting up packages
-packages=(sudo git zsh vim curl docker docker-compose alacritty starship)
+packages=(sudo git git-lfs zsh vim visual-studio-code curl docker docker-compose alacritty starship)
 
 if [ $IS_LINUX = 1 ]; then
 	packages+=(xsel xclip)
@@ -267,6 +300,7 @@ if [ $IS_MACOS = 1 ]; then
 fi
 
 init_home_git_repo
+setup_vscode_settings_symlink
 
 if [ $IS_MACOS = 1 ]; then
 	# Install fonts
