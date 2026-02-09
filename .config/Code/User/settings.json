@@ -4,6 +4,7 @@
     "python.defaultInterpreterPath": "/Users/antonio/.local/share/mise/installs/python/latest",
     "editor.fontFamily": "Input Nerd Font Mono, Menlo, Monaco, 'Courier New', monospace",
     "editor.fontSize": 13,
-    "editor.minimap.enabled": false
+    "editor.minimap.enabled": false,
+    "godotTools.documentation.displayMinimap": false
 }
 

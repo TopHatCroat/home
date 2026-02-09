@@ -94,18 +94,13 @@ init_home_git_repo() {
 
 	echo "Initializing home git repo in $target_home"
 
-	git_cmd="cd '$target_home' && \
+	/bin/bash -c \
+		"cd '$target_home' && \
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' init && \
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' remote add origin $home_git_repo && \
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' fetch && \
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' reset --hard origin/main && \
 		git --work-tree='$target_home' --git-dir='$target_home/.homegit' submodule update --init"
-
-	if [ "$IS_LINUX" = "1" ] && [ -n "$user" ]; then
-		sudo -u "$user" /bin/bash -c "$git_cmd"
-	else
-		/bin/bash -c "$git_cmd"
-	fi
 }
 
 setup_vscode_settings_symlink() {
@@ -126,6 +121,9 @@ setup_vscode_settings_symlink() {
 	fi
 
 	mkdir -p "$target_dir"
+
+	# Ensure we don't end up with a real file at the target path.
+	rm -f "$target_settings"
 
 	echo "Linking VS Code settings: $target_settings -> $source_settings"
 	if [ "$(id -u)" = "0" ] && [ -n "$user" ] && [ "$user" != "root" ]; then
@@ -200,7 +198,7 @@ fi
 user_home=$(eval echo "~$user")
 
 # Setting up packages
-packages=(sudo git git-lfs zsh vim visual-studio-code curl docker docker-compose alacritty starship)
+packages=(sudo git git-lfs zsh vim visual-studio-code tree curl docker docker-compose alacritty starship rsync)
 
 if [ $IS_LINUX = 1 ]; then
 	packages+=(xsel xclip)
@@ -225,21 +223,27 @@ if ! check_package_exists "mise"; then
 	curl https://mise.run | sh
 fi
 
-if [ -z $JAVA_HOME ]; then
-	echo "Setting up JDK 17"
-	mise use -g java@temurin  
-fi
+# Define SDKs to install via mise
+mise_sdks=(
+	"java@temurin"
+	"node@lts"
+	"pnpm@latest"
+	"bun@latest"
+	"go@latest"
+)
 
-if ! check_package_exists "node"; then
-	echo "Installing node & pnpm"
-	mise use -g node@lts
-	mise use -g pnpm@latest
-fi
-
-if ! check_package_exists "bun"; then
-	echo "Installing bun"
-	mise use -g bun@latest
-fi
+# Install SDKs that are not already present
+for sdk in "${mise_sdks[@]}"; do
+	sdk_name="${sdk%%@*}"  # Extract name before @
+	
+	# Check if SDK is already installed using mise ls
+	if mise ls "$sdk_name" 2>/dev/null | grep -q "$sdk_name"; then
+		echo "$sdk_name is already installed. Skipping..."
+	else
+		echo "Installing $sdk via mise..."
+		mise use -g "$sdk"
+	fi
+done
 
 ## Other setup
 if [ $IS_LINUX = 1 ]; then

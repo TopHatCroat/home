@@ -9,7 +9,6 @@ if [ $(uname -s) = "Linux" ]; then
   android_home=$HOME/Android/Sdk
 elif [ $(uname -s) = "Darwin" ]; then
   android_home=$HOME/Library/Android/sdk
-  export GOROOT="$(brew --prefix golang)/libexec"
 fi
 
 if [ -d $android_home ]; then
