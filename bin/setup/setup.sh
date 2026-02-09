@@ -33,11 +33,6 @@ check_package_exists() {
 install_package() {
 	pckg=$1
 
-	if check_package_exists "$pckg"; then
-		echo "Package $pckg exists. Skipping..."
-		return 0
-  	fi
-
 	if [ $IS_LINUX = 1 ]; then
 		case "$ID" in
 			arch|antergos|manjaro)
@@ -198,22 +193,37 @@ fi
 user_home=$(eval echo "~$user")
 
 # Setting up packages
-packages=(sudo git git-lfs zsh vim visual-studio-code tree curl docker docker-compose alacritty starship rsync)
+# Format: "package_name" or "package_name:executable_name" if they differ
+packages=(sudo git git-lfs zsh vim visual-studio-code:code tree curl docker docker-compose alacritty starship rsync)
 
 if [ $IS_LINUX = 1 ]; then
 	packages+=(xsel xclip)
 fi
 
 if [ $IS_MACOS = 1 ]; then
-	packages+=(gpg docker-desktop)
+	packages+=(gpg docker-desktop:docker)
 fi
 
 ## Package installation
 for i in "${packages[@]}"; do
+	# Split package and executable names
+	if [[ "$i" == *":"* ]]; then
+		package_name="${i%%:*}"
+		exec_name="${i##*:}"
+	else
+		package_name="$i"
+		exec_name="$i"
+	fi
 
-	install_package "$i"
+	# Check if executable exists
+	if check_package_exists "$exec_name"; then
+		echo "Package $package_name exists. Skipping..."
+		continue
+	fi
+
+	install_package "$package_name"
 	if [ $? -ne 0 ]; then
-		echo "Error occured while installing $i."
+		echo "Error occured while installing $package_name."
 		exit 1
 	fi
 done
