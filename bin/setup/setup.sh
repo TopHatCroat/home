@@ -194,7 +194,7 @@ user_home=$(eval echo "~$user")
 
 # Setting up packages
 # Format: "package_name" or "package_name:executable_name" if they differ
-packages=(sudo git git-lfs zsh vim visual-studio-code:code tree curl docker docker-compose alacritty starship rsync)
+packages=(sudo git git-lfs zsh vim visual-studio-code:code tree curl docker docker-compose alacritty tmux starship rsync opencode)
 
 if [ $IS_LINUX = 1 ]; then
 	packages+=(xsel xclip)
