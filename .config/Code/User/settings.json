@@ -5,6 +5,25 @@
     "editor.fontFamily": "Input Nerd Font Mono, Menlo, Monaco, 'Courier New', monospace",
     "editor.fontSize": 13,
     "editor.minimap.enabled": false,
-    "godotTools.documentation.displayMinimap": false
+    "godotTools.documentation.displayMinimap": false,
+    "vs-kubernetes": {
+        "vscode-kubernetes.helm-path-mac": "/Users/antonio/.vs-kubernetes/tools/helm/darwin-arm64/helm",
+        "vscode-kubernetes.minikube-path-mac": "/Users/antonio/.vs-kubernetes/tools/minikube/darwin-arm64/minikube",
+        "vs-kubernetes.knownKubeconfigs": [
+            "/Users/antonio/.kubeconfigs/barka.yaml"
+        ],
+        "vs-kubernetes.kubeconfig": "/Users/antonio/.kubeconfigs/barka.yaml"
+    },
+    "openInExternalApp.openMapper": [
+        {
+            "extensionName": "blend",
+            "apps": [
+                {
+                    "title": "Blender",
+                    "openCommand": "Blender.app"
+                }
+            ]
+        }
+    ],
+    "editor.accessibilitySupport": "off"
 }
-

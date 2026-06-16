@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+set -e
+
+INPUT=""
+START_FRAME=""
+END_FRAME=""
+
+# defaults (used both for gif + frame→time conversion)
+FPS=10
+SCALE=480
+
+# --- parse args ---
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    --start-frame) START_FRAME="$2"; shift ;;
+    --end-frame) END_FRAME="$2"; shift ;;
+    --fps) FPS="$2"; shift ;;
+    --scale) SCALE="$2"; shift ;;
+    *) INPUT="$1" ;;
+  esac
+  shift
+done
+
+if [ -z "$INPUT" ]; then
+  echo "Usage: $0 input.mov [--start-frame N] [--end-frame N] [--fps N] [--scale N]"
+  exit 1
+fi
+
+if [ ! -f "$INPUT" ]; then
+  echo "File not found: $INPUT"
+  exit 1
+fi
+
+DIR="$(cd "$(dirname "$INPUT")" && pwd)"
+FILENAME="$(basename "$INPUT")"
+NAME="${FILENAME%.*}"
+
+OUTPUT="$DIR/$NAME.gif"
+PALETTE="/tmp/${NAME}_palette.png"
+
+# --- frame → seconds ---
+START_TIME=""
+END_TIME=""
+
+if [ -n "$START_FRAME" ]; then
+  START_TIME=$(awk "BEGIN {print $START_FRAME / $FPS}")
+fi
+
+if [ -n "$END_FRAME" ]; then
+  END_TIME=$(awk "BEGIN {print $END_FRAME / $FPS}")
+fi
+
+# --- trim args ---
+TRIM_ARGS=()
+
+if [ -n "$START_TIME" ]; then
+  TRIM_ARGS+=("-ss" "$START_TIME")
+fi
+
+if [ -n "$END_TIME" ]; then
+  TRIM_ARGS+=("-to" "$END_TIME")
+fi
+
+echo "Generating palette..."
+ffmpeg -y "${TRIM_ARGS[@]}" -i "$INPUT" \
+  -vf "fps=$FPS,scale=$SCALE:-1:flags=lanczos,palettegen" \
+  "$PALETTE"
+
+echo "Creating GIF..."
+ffmpeg -y "${TRIM_ARGS[@]}" -i "$INPUT" -i "$PALETTE" \
+  -filter_complex "fps=$FPS,scale=$SCALE:-1:flags=lanczos[x];[x][1:v]paletteuse" \
+  "$OUTPUT"
+
+echo "Cleaning up..."
+rm -f "$PALETTE"
+
+echo "Done: $OUTPUT"

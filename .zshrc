@@ -69,6 +69,7 @@ autoload -Uz compinit
 compinit -it
 # End of lines added by compinstall
 
+
 # oh-my-zsh plugins
 source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $ZSH_CUSTOM/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
